@@ -1,0 +1,479 @@
+[
+  {
+    "team": "England",
+    "details": [
+      {
+        "date": "2010-11-15",
+        "points": 5,
+        "type": "try"
+      },
+      {
+        "date": "2010-11-15",
+        "points": 2,
+        "type": "con"
+      }
+    ],
+    "total": 7,
+    "name": "Bethal Solomons",
+    "id": "4005"
+  },
+  {
+    "team": "Wales",
+    "details": [
+      {
+        "date": "2010-11-15",
+        "points": 5,
+        "type": "try"
+      }
+    ],
+    "total": 5,
+    "name": "Dave Hewitt",
+    "id": "3007"
+  },
+  {
+    "team": "England",
+    "details": [
+      {
+        "date": "2010-11-15",
+        "points": 3,
+        "type": "pen"
+      }
+    ],
+    "total": 3,
+    "name": "William Smyth",
+    "id": "4004"
+  },
+  {
+    "team": "Ireland",
+    "details": [
+      {
+        "date": "2005-04-20",
+        "points": 5,
+        "type": "try"
+      },
+      {
+        "date": "2005-04-20",
+        "points": 2,
+        "type": "con"
+      }
+    ],
+    "total": 7,
+    "name": "J Dixon",
+    "id": "2242"
+  },
+  {
+    "team": "Wales",
+    "details": [
+      {
+        "date": "1985-02-15",
+        "points": 4,
+        "type": "try"
+      },
+      {
+        "date": "1985-02-15",
+        "points": 2,
+        "type": "con"
+      }
+    ],
+    "total": 6,
+    "name": "William McCombe",
+    "id": "3003"
+  },
+  {
+    "team": "Wales",
+    "details": [
+      {
+        "date": "1985-02-15",
+        "points": 3,
+        "type": "pen"
+      },
+      {
+        "date": "1985-02-15",
+        "points": 4,
+        "type": "try"
+      }
+    ],
+    "total": 7,
+    "name": "Donal Canniffe",
+    "id": "3001"
+  },
+  {
+    "team": "Ireland",
+    "details": [
+      {
+        "date": "1971-01-01",
+        "points": 3,
+        "type": "dropGoals"
+      }
+    ],
+    "total": 3,
+    "name": "Steve Jones",
+    "id": "2240"
+  },
+  {
+    "team": "France",
+    "details": [
+      {
+        "date": "1971-01-01",
+        "points": 3,
+        "type": "dropGoals"
+      }
+    ],
+    "total": 3,
+    "name": "James Ward",
+    "id": "2124"
+  },
+  {
+    "team": "France",
+    "details": [
+      {
+        "date": "1971-01-01",
+        "points": 4,
+        "type": "try"
+      }
+    ],
+    "total": 4,
+    "name": "Herbert Ward",
+    "id": "2123"
+  },
+  {
+    "team": "France",
+    "details": [
+      {
+        "date": "1971-01-01",
+        "points": 4,
+        "type": "try"
+      },
+      {
+        "date": "1971-01-01",
+        "points": 2,
+        "type": "con"
+      },
+      {
+        "date": "1971-01-01",
+        "points": 2,
+        "type": "con"
+      }
+    ],
+    "total": 8,
+    "name": "George Ward",
+    "id": "2122"
+  },
+  {
+    "team": "Scotland",
+    "details": [
+      {
+        "date": "1995-03-10",
+        "points": 5,
+        "type": "try"
+      }
+    ],
+    "total": 5,
+    "name": "Christian Boujet",
+    "id": "5003"
+  },
+  {
+    "team": "Wales",
+    "details": [
+      {
+        "date": "1985-02-15",
+        "points": 3,
+        "type": "pen"
+      }
+    ],
+    "total": 3,
+    "name": "Seamus Dennison",
+    "id": "3002"
+  },
+  {
+    "team": "Wales",
+    "details": [
+      {
+        "date": "1985-02-15",
+        "points": 3,
+        "type": "dropGoals"
+      }
+    ],
+    "total": 3,
+    "name": "Mike Sherry",
+    "id": "3004"
+  },
+  {
+    "team": "Wales",
+    "details": [
+      {
+        "date": "2010-11-15",
+        "points": 3,
+        "type": "pen"
+      }
+    ],
+    "total": 3,
+    "name": "Paddy Agnew",
+    "id": "3005"
+  },
+  {
+    "team": "England",
+    "details": [
+      {
+        "date": "1985-02-15",
+        "points": 4,
+        "type": "try"
+      },
+      {
+        "date": "1985-02-15",
+        "points": 2,
+        "type": "con"
+      }
+    ],
+    "total": 6,
+    "name": "Robertson Smyth",
+    "id": "4002"
+  },
+  {
+    "team": "Italy",
+    "details": [
+      {
+        "date": "2005-04-20",
+        "points": 5,
+        "type": "try"
+      },
+      {
+        "date": "2005-04-20",
+        "points": 2,
+        "type": "con"
+      }
+    ],
+    "total": 7,
+    "name": "Henning Van Aswegen",
+    "id": "6003"
+  },
+  {
+    "team": "Scotland",
+    "details": [
+      {
+        "date": "1995-03-10",
+        "points": 5,
+        "type": "try"
+      },
+      {
+        "date": "1995-03-10",
+        "points": 2,
+        "type": "con"
+      }
+    ],
+    "total": 7,
+    "name": "Guillaume Bouic",
+    "id": "5002"
+  },
+  {
+    "team": "England",
+    "details": [
+      {
+        "date": "1985-02-15",
+        "points": 4,
+        "type": "try"
+      },
+      {
+        "date": "1985-02-15",
+        "points": 2,
+        "type": "con"
+      }
+    ],
+    "total": 6,
+    "name": "Tommy Smyth",
+    "id": "4003"
+  },
+  {
+    "team": "Italy",
+    "details": [
+      {
+        "date": "2005-04-20",
+        "points": 3,
+        "type": "pen"
+      }
+    ],
+    "total": 3,
+    "name": "Clive Ulyate",
+    "id": "6001"
+  },
+  {
+    "team": "Ireland",
+    "details": [
+      {
+        "date": "1971-01-01",
+        "points": 3,
+        "type": "pen"
+      },
+      {
+        "date": "1971-01-01",
+        "points": 3,
+        "type": "pen"
+      },
+      {
+        "date": "1971-01-01",
+        "points": 4,
+        "type": "try"
+      },
+      {
+        "date": "2005-04-20",
+        "points": 3,
+        "type": "pen"
+      }
+    ],
+    "total": 13,
+    "name": "M Dixon",
+    "id": "2239"
+  },
+  {
+    "team": "Italy",
+    "details": [
+      {
+        "date": "2005-04-20",
+        "points": 3,
+        "type": "pen"
+      }
+    ],
+    "total": 3,
+    "name": "Pieter Uys",
+    "id": "6002"
+  },
+  {
+    "team": "France",
+    "details": [
+      {
+        "date": "1971-01-01",
+        "points": 2,
+        "type": "con"
+      }
+    ],
+    "total": 2,
+    "name": "John Ward",
+    "id": "2125"
+  },
+  {
+    "team": "France",
+    "details": [
+      {
+        "date": "1971-01-01",
+        "points": 3,
+        "type": "pen"
+      },
+      {
+        "date": "1971-01-01",
+        "points": 3,
+        "type": "pen"
+      },
+      {
+        "date": "1971-01-01",
+        "points": 4,
+        "type": "try"
+      },
+      {
+        "date": "1971-01-01",
+        "points": 3,
+        "type": "dropGoals"
+      },
+      {
+        "date": "1995-03-10",
+        "points": 3,
+        "type": "pen"
+      }
+    ],
+    "total": 16,
+    "name": "Ernest Walton",
+    "id": "2120"
+  },
+  {
+    "team": "Ireland",
+    "details": [
+      {
+        "date": "1971-01-01",
+        "points": 2,
+        "type": "con"
+      },
+      {
+        "date": "1971-01-01",
+        "points": 2,
+        "type": "con"
+      }
+    ],
+    "total": 4,
+    "name": "Andrew Simpson",
+    "id": "2241"
+  },
+  {
+    "team": "Ireland",
+    "details": [
+      {
+        "date": "1971-01-01",
+        "points": 4,
+        "type": "try"
+      }
+    ],
+    "total": 4,
+    "name": null,
+    "id": "2238"
+  },
+  {
+    "team": "Wales",
+    "details": [
+      {
+        "date": "2010-11-15",
+        "points": 5,
+        "type": "try"
+      },
+      {
+        "date": "2010-11-15",
+        "points": 2,
+        "type": "con"
+      }
+    ],
+    "total": 7,
+    "name": "Christopher McKibbin",
+    "id": "3006"
+  },
+  {
+    "team": "France",
+    "details": [
+      {
+        "date": "1995-03-10",
+        "points": 5,
+        "type": "try"
+      },
+      {
+        "date": "1995-03-10",
+        "points": 2,
+        "type": "con"
+      }
+    ],
+    "total": 7,
+    "name": "Chris Wardlow",
+    "id": "2126"
+  },
+  {
+    "team": "England",
+    "details": [
+      {
+        "date": "1985-02-15",
+        "points": 3,
+        "type": "pen"
+      }
+    ],
+    "total": 3,
+    "name": "Patrick Smyth",
+    "id": "4001"
+  },
+  {
+    "team": "Scotland",
+    "details": [
+      {
+        "date": "1995-03-10",
+        "points": 3,
+        "type": "pen"
+      }
+    ],
+    "total": 3,
+    "name": "Gerard Bouguyon",
+    "id": "5001"
+  }
+]

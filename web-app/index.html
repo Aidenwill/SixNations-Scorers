@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Six Nations Scoring Quiz</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-shape bg-a"></div>
+  <div class="bg-shape bg-b"></div>
+
+  <main class="app">
+    <header class="hero">
+      <p class="eyebrow">Six Nations</p>
+      <h1>Scoring Duel</h1>
+      <p class="subtitle">Choisis le joueur avec le plus de points historiques.</p>
+    </header>
+
+    <section id="player-input" class="panel">
+      <h2>Commencer une partie</h2>
+      <div class="row">
+        <input id="player-name" type="text" maxlength="24" placeholder="Ton nom">
+        <button id="start-game" class="btn primary">Jouer</button>
+      </div>
+    </section>
+
+    <section id="game-play" class="panel hidden" aria-live="polite">
+      <div class="stats">
+        <div class="stat"><span>Round</span><strong id="round-number">0</strong></div>
+        <div class="stat"><span>Serie</span><strong id="current-streak">0</strong></div>
+        <div class="stat"><span>Meilleure serie</span><strong id="best-streak">0</strong></div>
+      </div>
+
+      <div class="duel-grid">
+        <article class="card">
+          <p class="team" id="player1-team">Team</p>
+          <h3 id="player1-name">Joueur 1</h3>
+          <button class="btn choice" data-choice="1">Je choisis ce joueur</button>
+        </article>
+
+        <div class="versus">VS</div>
+
+        <article class="card">
+          <p class="team" id="player2-team">Team</p>
+          <h3 id="player2-name">Joueur 2</h3>
+          <button class="btn choice" data-choice="2">Je choisis ce joueur</button>
+        </article>
+      </div>
+
+      <div id="result-section" class="result hidden">
+        <h3 id="result-message">Resultat</h3>
+        <p id="result-detail"></p>
+        <button id="next-round" class="btn primary">Round suivant</button>
+      </div>
+    </section>
+
+    <section id="game-over" class="panel hidden">
+      <h2>Partie terminee</h2>
+      <div id="final-stats" class="final-stats"></div>
+      <button id="play-again" class="btn primary">Rejouer</button>
+    </section>
+
+    <section class="panel">
+      <h2>Top scores local</h2>
+      <div id="high-scores-list" class="scores"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

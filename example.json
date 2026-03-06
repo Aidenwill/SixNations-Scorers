@@ -1,0 +1,117 @@
+[
+  {
+    "date": "1971-01-01",
+    "teams": [
+      {
+        "abbreviation": "Ireland",
+        "scoring": {
+          "pen": ["2239", "2239"],
+          "try": ["2239", "2238"],
+          "dropGoals": ["2240"],
+          "con": ["2241", "2241"]
+        }
+      },
+      {
+        "abbreviation": "France",
+        "scoring": {
+          "pen": ["2120", "2120"],
+          "try": ["2120", "2123", "2122"],
+          "dropGoals": ["2124", "2120"],
+          "con": ["2122", "2122", "2125"]
+        }
+      }
+    ]
+  },
+  {
+    "date": "1985-02-15",
+    "teams": [
+      {
+        "abbreviation": "Wales",
+        "scoring": {
+          "pen": ["3001", "3002"],
+          "try": ["3003", "3001"],
+          "dropGoals": ["3004"],
+          "con": ["3003"]
+        }
+      },
+      {
+        "abbreviation": "England",
+        "scoring": {
+          "pen": ["4001"],
+          "try": ["4002", "4003"],
+          "dropGoals": [],
+          "con": ["4002", "4003"]
+        }
+      }
+    ]
+  },
+  {
+    "date": "1995-03-10",
+    "teams": [
+      {
+        "abbreviation": "Scotland",
+        "scoring": {
+          "pen": ["5001"],
+          "try": ["5002", "5003"],
+          "dropGoals": [],
+          "con": ["5002"]
+        }
+      },
+      {
+        "abbreviation": "France",
+        "scoring": {
+          "pen": ["2120"],
+          "try": ["2126"],
+          "dropGoals": [],
+          "con": ["2126"]
+        }
+      }
+    ]
+  },
+  {
+    "date": "2005-04-20",
+    "teams": [
+      {
+        "abbreviation": "Italy",
+        "scoring": {
+          "pen": ["6001", "6002"],
+          "try": ["6003"],
+          "dropGoals": [],
+          "con": ["6003"]
+        }
+      },
+      {
+        "abbreviation": "Ireland",
+        "scoring": {
+          "pen": ["2239"],
+          "try": ["2242"],
+          "dropGoals": [],
+          "con": ["2242"]
+        }
+      }
+    ]
+  },
+  {
+    "date": "2010-11-15",
+    "teams": [
+      {
+        "abbreviation": "Wales",
+        "scoring": {
+          "pen": ["3005"],
+          "try": ["3006", "3007"],
+          "dropGoals": [],
+          "con": ["3006"]
+        }
+      },
+      {
+        "abbreviation": "England",
+        "scoring": {
+          "pen": ["4004"],
+          "try": ["4005"],
+          "dropGoals": [],
+          "con": ["4005"]
+        }
+      }
+    ]
+  }
+]
