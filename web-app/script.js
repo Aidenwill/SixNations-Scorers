@@ -2,6 +2,40 @@ const DATA_FILE = 'players.json';
 const SCORE_KEY = 'sixNationsWebHighScores';
 const MAX_STAY = 2;
 
+// Team emblems and colors
+const TEAM_CONFIG = {
+  'England': {
+    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/b0/England_national_rugby_union_team_logo.svg/120px-England_national_rugby_union_team_logo.svg.png',
+    color: '#ffffff',
+    accent: '#d71920'
+  },
+  'France': {
+    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/1/14/French_Rugby_Federation_logo.svg/120px-French_Rugby_Federation_logo.svg.png',
+    color: '#0055a4',
+    accent: '#ef4135'
+  },
+  'Wales': {
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/WRU_logo.svg/120px-WRU_logo.svg.png',
+    color: '#d71920',
+    accent: '#ffffff'
+  },
+  'Scotland': {
+    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/bc/Scottish_Rugby_Union.svg/120px-Scottish_Rugby_Union.svg.png',
+    color: '#00337f',
+    accent: '#ffffff'
+  },
+  'Ireland': {
+    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/d/d7/IRFU_logo.svg/120px-IRFU_logo.svg.png',
+    color: '#169b62',
+    accent: '#ffffff'
+  },
+  'Italy': {
+    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/89/Federazione_Italiana_Rugby_logo.svg/120px-Federazione_Italiana_Rugby_logo.svg.png',
+    color: '#009246',
+    accent: '#0066cc'
+  }
+};
+
 let players = [];
 let currentPlayer = null;
 let opponentPlayer = null;
@@ -21,6 +55,7 @@ const ui = {
   startBtn: document.getElementById('start-game'),
   nextRoundBtn: document.getElementById('next-round'),
   playAgainBtn: document.getElementById('play-again'),
+  exportScoresBtn: document.getElementById('export-scores'),
   playerNameInput: document.getElementById('player-name'),
   roundNumber: document.getElementById('round-number'),
   currentStreak: document.getElementById('current-streak'),
@@ -63,7 +98,8 @@ function normalizePlayers(rawPlayers) {
       id: String(p.id ?? p.Id ?? ''),
       name: p.name ?? p.Name ?? 'Unknown',
       team: p.team ?? p.Team ?? 'Unknown',
-      total: Number(p.total ?? p.Total ?? 0)
+      total: Number(p.total ?? p.Total ?? 0),
+      details: p.details ?? p.Details ?? []
     }))
     .filter((p) => p.id && Number.isFinite(p.total));
 }
@@ -119,7 +155,7 @@ function prepareRound() {
   }
 
   if (!opponentPlayer) {
-    endGame('Plus de duel possible avec les donnees actuelles.');
+    endGame('No more duels possible with current data.');
     return;
   }
 
@@ -138,15 +174,15 @@ function evaluateChoice(choice) {
   if (isCorrect) {
     streak += 1;
     bestStreak = Math.max(bestStreak, streak);
-    ui.resultMessage.textContent = 'Bonne reponse';
+    ui.resultMessage.textContent = 'Correct!';
     ui.resultMessage.style.color = '#1f6a5f';
   } else {
     streak = 0;
-    ui.resultMessage.textContent = 'Mauvaise reponse';
+    ui.resultMessage.textContent = 'Wrong!';
     ui.resultMessage.style.color = '#af3f2b';
   }
 
-  ui.resultDetail.textContent = winner.name + ' (' + winner.team + ') a ' + winner.total + ' points.';
+  ui.resultDetail.textContent = winner.name + ' (' + winner.team + ') has ' + winner.total + ' points.';
   ui.resultSection.classList.remove('hidden');
   updateScoreboard();
 
@@ -181,7 +217,7 @@ function goToNextRound() {
   }
 
   if (!currentPlayer || !opponentPlayer) {
-    endGame('Impossible de trouver un nouveau duel.');
+    endGame('Unable to find a new duel.');
     return;
   }
 
@@ -207,6 +243,28 @@ function updateDuelCards() {
   ui.player1Team.textContent = currentPlayer.team;
   ui.player2Name.textContent = opponentPlayer.name;
   ui.player2Team.textContent = opponentPlayer.team;
+
+  // Update card backgrounds with team colors
+  const card1 = document.querySelector('.card:first-of-type');
+  const card2 = document.querySelector('.card:last-of-type');
+  const badge1 = document.getElementById('badge1');
+  const badge2 = document.getElementById('badge2');
+  
+  if (card1 && TEAM_CONFIG[currentPlayer.team]) {
+    card1.style.borderColor = TEAM_CONFIG[currentPlayer.team].accent;
+    card1.style.background = `linear-gradient(135deg, ${TEAM_CONFIG[currentPlayer.team].color}15, #f7f8f5)`;
+    if (badge1) {
+      badge1.style.backgroundImage = `url('${TEAM_CONFIG[currentPlayer.team].logo}')`;
+    }
+  }
+  
+  if (card2 && TEAM_CONFIG[opponentPlayer.team]) {
+    card2.style.borderColor = TEAM_CONFIG[opponentPlayer.team].accent;
+    card2.style.background = `linear-gradient(135deg, ${TEAM_CONFIG[opponentPlayer.team].color}15, #f7f8f5)`;
+    if (badge2) {
+      badge2.style.backgroundImage = `url('${TEAM_CONFIG[opponentPlayer.team].logo}')`;
+    }
+  }
 }
 
 function getRandomPlayer() {
@@ -274,7 +332,7 @@ function saveHighScore(name, score) {
 
 function displayHighScores() {
   if (!highScores.length) {
-    ui.highScoresList.innerHTML = '<p>Aucun score pour le moment.</p>';
+    ui.highScoresList.innerHTML = '<p>No high scores yet. Be the first!</p>';
     return;
   }
 
@@ -291,6 +349,70 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#39;');
+}
+
+// Show player scoring details
+function showPlayerDetails(playerNum) {
+  const player = playerNum === 1 ? currentPlayer : opponentPlayer;
+  if (!player) return;
+
+  let detailsHTML = `
+    <div class="player-details-modal">
+      <div class="modal-content">
+        <h3>${escapeHtml(player.name)} (${escapeHtml(player.team)})</h3>
+        <p><strong>Total Points:</strong> ${player.total}</p>
+  `;
+  
+  if (player.details && Array.isArray(player.details) && player.details.length > 0) {
+    detailsHTML += '<h4>Scoring History:</h4><ul>';
+    player.details.forEach(d => {
+      const date = d.date || d.Date || 'N/A';
+      const points = d.points || d.Points || 0;
+      const type = d.type || d.Type || 'Unknown';
+      detailsHTML += `<li>${escapeHtml(date)}: ${points} points (${escapeHtml(type)})</li>`;
+    });
+    detailsHTML += '</ul>';
+  } else {
+    detailsHTML += '<p><em>No detailed scoring history available</em></p>';
+  }
+  
+  detailsHTML += `
+        <button class="btn primary close-modal">Close</button>
+      </div>
+    </div>
+  `;
+  
+  // Remove any existing modal
+  const existingModal = document.querySelector('.player-details-modal');
+  if (existingModal) existingModal.remove();
+  
+  // Add modal to page
+  document.body.insertAdjacentHTML('beforeend', detailsHTML);
+  
+  // Add close handler
+  document.querySelector('.close-modal').addEventListener('click', () => {
+    document.querySelector('.player-details-modal').remove();
+  });
+}
+
+// Export high scores to JSON file
+function exportScoresToJSON() {
+  if (highScores.length === 0) {
+    alert('No scores to export yet!');
+    return;
+  }
+  
+  const dataStr = JSON.stringify(highScores, null, 2);
+  const dataBlob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(dataBlob);
+  
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'six-nations-high-scores-' + new Date().toISOString().slice(0, 10) + '.json';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
 document.addEventListener('DOMContentLoaded', initGame);
