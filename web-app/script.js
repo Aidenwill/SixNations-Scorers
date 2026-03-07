@@ -108,11 +108,19 @@ function setupEventListeners() {
   ui.startBtn.addEventListener('click', startGame);
   ui.nextRoundBtn.addEventListener('click', goToNextRound);
   ui.playAgainBtn.addEventListener('click', resetToStart);
+  ui.exportScoresBtn.addEventListener('click', exportScoresToJSON);
 
   document.querySelectorAll('.choice').forEach((btn) => {
     btn.addEventListener('click', () => {
       const choice = Number(btn.dataset.choice);
       evaluateChoice(choice);
+    });
+  });
+
+  document.querySelectorAll('.details').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const playerNum = Number(btn.dataset.player);
+      showPlayerDetails(playerNum);
     });
   });
 
@@ -249,22 +257,48 @@ function updateDuelCards() {
   const card2 = document.querySelector('.card:last-of-type');
   const badge1 = document.getElementById('badge1');
   const badge2 = document.getElementById('badge2');
+  const team1 = getTeamConfig(currentPlayer.team);
+  const team2 = getTeamConfig(opponentPlayer.team);
   
-  if (card1 && TEAM_CONFIG[currentPlayer.team]) {
-    card1.style.borderColor = TEAM_CONFIG[currentPlayer.team].accent;
-    card1.style.background = `linear-gradient(135deg, ${TEAM_CONFIG[currentPlayer.team].color}15, #f7f8f5)`;
+  if (card1 && team1) {
+    card1.style.borderColor = team1.accent;
+    card1.style.background = `linear-gradient(135deg, ${team1.color}22, #f7f8f5)`;
     if (badge1) {
-      badge1.style.backgroundImage = `url('${TEAM_CONFIG[currentPlayer.team].logo}')`;
+      badge1.style.backgroundImage = `url('${team1.logo}')`;
     }
+  } else if (badge1) {
+    badge1.style.backgroundImage = 'none';
   }
   
-  if (card2 && TEAM_CONFIG[opponentPlayer.team]) {
-    card2.style.borderColor = TEAM_CONFIG[opponentPlayer.team].accent;
-    card2.style.background = `linear-gradient(135deg, ${TEAM_CONFIG[opponentPlayer.team].color}15, #f7f8f5)`;
+  if (card2 && team2) {
+    card2.style.borderColor = team2.accent;
+    card2.style.background = `linear-gradient(135deg, ${team2.color}22, #f7f8f5)`;
     if (badge2) {
-      badge2.style.backgroundImage = `url('${TEAM_CONFIG[opponentPlayer.team].logo}')`;
+      badge2.style.backgroundImage = `url('${team2.logo}')`;
     }
+  } else if (badge2) {
+    badge2.style.backgroundImage = 'none';
   }
+}
+
+function getTeamConfig(teamName) {
+  const normalized = String(teamName || '').trim().toLowerCase();
+  const aliasMap = {
+    england: 'England',
+    france: 'France',
+    wales: 'Wales',
+    scotland: 'Scotland',
+    ireland: 'Ireland',
+    italy: 'Italy'
+  };
+
+  const canonical = aliasMap[normalized];
+  if (canonical) {
+    return TEAM_CONFIG[canonical];
+  }
+
+  const matchedKey = Object.keys(TEAM_CONFIG).find((key) => normalized.includes(key.toLowerCase()));
+  return matchedKey ? TEAM_CONFIG[matchedKey] : null;
 }
 
 function getRandomPlayer() {
