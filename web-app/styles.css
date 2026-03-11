@@ -93,6 +93,20 @@ h1 {
   color: #3e4540;
 }
 
+.info-panel {
+  border: 1px solid #c7cfbf;
+  border-left: 6px solid var(--accent);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: #f8f7f1;
+  color: #3e4540;
+}
+
+.info-panel p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
 .panel {
   background: color-mix(in srgb, var(--panel) 92%, #fff);
   border: 1px solid var(--line);

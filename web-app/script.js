@@ -4,32 +4,32 @@ const MAX_STAY = 2;
 // Team emblems and colors
 const TEAM_CONFIG = {
   'England': {
-    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/b0/England_national_rugby_union_team_logo.svg/120px-England_national_rugby_union_team_logo.svg.png',
+    logo: 'https://flagcdn.com/w80/gb-eng.png',
     color: '#ffffff',
     accent: '#d71920'
   },
   'France': {
-    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/1/14/French_Rugby_Federation_logo.svg/120px-French_Rugby_Federation_logo.svg.png',
+    logo: 'https://flagcdn.com/w80/fr.png',
     color: '#0055a4',
     accent: '#ef4135'
   },
   'Wales': {
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/WRU_logo.svg/120px-WRU_logo.svg.png',
+    logo: 'https://flagcdn.com/w80/gb-wls.png',
     color: '#d71920',
     accent: '#ffffff'
   },
   'Scotland': {
-    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/b/bc/Scottish_Rugby_Union.svg/120px-Scottish_Rugby_Union.svg.png',
+    logo: 'https://flagcdn.com/w80/gb-sct.png',
     color: '#00337f',
     accent: '#ffffff'
   },
   'Ireland': {
-    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/d/d7/IRFU_logo.svg/120px-IRFU_logo.svg.png',
+    logo: 'https://flagcdn.com/w80/ie.png',
     color: '#169b62',
     accent: '#ffffff'
   },
   'Italy': {
-    logo: 'https://upload.wikimedia.org/wikipedia/en/thumb/8/89/Federazione_Italiana_Rugby_logo.svg/120px-Federazione_Italiana_Rugby_logo.svg.png',
+    logo: 'https://flagcdn.com/w80/it.png',
     color: '#009246',
     accent: '#0066cc'
   }
@@ -63,7 +63,9 @@ const ui = {
   player2Team: document.getElementById('player2-team'),
   resultMessage: document.getElementById('result-message'),
   resultDetail: document.getElementById('result-detail'),
-  finalStats: document.getElementById('final-stats')
+  finalStats: document.getElementById('final-stats'),
+  detailBtn1: document.querySelector('.details[data-player="1"]'),
+  detailBtn2: document.querySelector('.details[data-player="2"]')
 };
 
 async function initGame() {
@@ -95,6 +97,10 @@ function normalizePlayers(rawPlayers) {
       team: p.team ?? p.Team ?? 'Unknown',
       total: Number(p.total ?? p.Total ?? 0),
       details: p.details ?? p.Details ?? []
+    }))
+    .map((p) => ({
+      ...p,
+      activityYearsLabel: computeActivityYearsLabel(p.details)
     }))
     .filter((p) => p.id && Number.isFinite(p.total));
 }
@@ -238,10 +244,10 @@ function updateScoreboard() {
 function updateDuelCards() {
   ui.player1Name.textContent = currentPlayer.name;
   ui.player1Team.textContent = currentPlayer.team;
-  ui.player1Years.textContent = getPlayerActivityYearsLabel(currentPlayer);
+  ui.player1Years.textContent = currentPlayer.activityYearsLabel;
   ui.player2Name.textContent = opponentPlayer.name;
   ui.player2Team.textContent = opponentPlayer.team;
-  ui.player2Years.textContent = getPlayerActivityYearsLabel(opponentPlayer);
+  ui.player2Years.textContent = opponentPlayer.activityYearsLabel;
 
   // Update card backgrounds with team colors
   const card1 = document.querySelector('.card:first-of-type');
@@ -284,12 +290,12 @@ function updateRevealUI() {
   ui.player2Score.textContent = score2Revealed ? opponentPlayer.total + ' pts' : '';
   ui.player2Score.classList.toggle('hidden', !score2Revealed);
 
-  document.querySelector('.details[data-player="1"]').classList.toggle('hidden', !score1Revealed);
-  document.querySelector('.details[data-player="2"]').classList.toggle('hidden', !score2Revealed);
+  if (ui.detailBtn1) ui.detailBtn1.classList.toggle('hidden', !score1Revealed);
+  if (ui.detailBtn2) ui.detailBtn2.classList.toggle('hidden', !score2Revealed);
 }
 
-function getPlayerActivityYearsLabel(player) {
-  const details = Array.isArray(player?.details) ? player.details : [];
+function computeActivityYearsLabel(detailsInput) {
+  const details = Array.isArray(detailsInput) ? detailsInput : [];
   const years = details
     .map((d) => String(d.date || d.Date || '').slice(0, 4))
     .map((year) => Number(year))
