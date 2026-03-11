@@ -4,32 +4,32 @@ const MAX_STAY = 2;
 // Team emblems and colors
 const TEAM_CONFIG = {
   'England': {
-    logo: 'https://flagcdn.com/w80/gb-eng.png',
+    logo: 'assets/flags/england.svg',
     color: '#ffffff',
     accent: '#d71920'
   },
   'France': {
-    logo: 'https://flagcdn.com/w80/fr.png',
+    logo: 'assets/flags/france.svg',
     color: '#0055a4',
     accent: '#ef4135'
   },
   'Wales': {
-    logo: 'https://flagcdn.com/w80/gb-wls.png',
+    logo: 'assets/flags/wales.svg',
     color: '#d71920',
     accent: '#ffffff'
   },
   'Scotland': {
-    logo: 'https://flagcdn.com/w80/gb-sct.png',
+    logo: 'assets/flags/scotland.svg',
     color: '#00337f',
     accent: '#ffffff'
   },
   'Ireland': {
-    logo: 'https://flagcdn.com/w80/ie.png',
+    logo: 'assets/flags/ireland.svg',
     color: '#169b62',
     accent: '#ffffff'
   },
   'Italy': {
-    logo: 'https://flagcdn.com/w80/it.png',
+    logo: 'assets/flags/italy.svg',
     color: '#009246',
     accent: '#0066cc'
   }

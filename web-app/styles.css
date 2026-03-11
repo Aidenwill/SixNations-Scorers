@@ -100,6 +100,7 @@ h1 {
   padding: 10px 12px;
   background: #f8f7f1;
   color: #3e4540;
+  box-shadow: 0 6px 16px rgba(9, 17, 31, 0.05);
 }
 
 .info-panel p {
