@@ -431,7 +431,7 @@ function showPlayerDetails(playerNum) {
       entry.types.set(type, (entry.types.get(type) || 0) + 1);
     });
 
-    detailsHTML += '<h4>Scoring History:</h4><ul>';
+    detailsHTML += '<h4>Scoring History111:</h4><ul>';
     byDate.forEach((entry, date) => {
       const typeSummary = Array.from(entry.types.entries())
         .map(([type, count]) => formatScoreType(type, count))
