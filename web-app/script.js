@@ -42,6 +42,7 @@ let streak = 0;
 let bestStreak = 0;
 let roundsPlayed = 0;
 let consecutiveRounds = 0;
+let revealedPlayerIds = new Set();
 
 const ui = {
   gamePlaySection: document.getElementById('game-play'),
@@ -49,6 +50,8 @@ const ui = {
   resultSection: document.getElementById('result-section'),
   nextRoundBtn: document.getElementById('next-round'),
   playAgainBtn: document.getElementById('play-again'),
+  player1Score: document.getElementById('player1-score'),
+  player2Score: document.getElementById('player2-score'),
   roundNumber: document.getElementById('round-number'),
   currentStreak: document.getElementById('current-streak'),
   bestStreak: document.getElementById('best-streak'),
@@ -120,6 +123,7 @@ function startGame() {
   consecutiveRounds = 0;
   currentPlayer = null;
   opponentPlayer = null;
+  revealedPlayerIds = new Set();
 
   ui.gameOverSection.classList.add('hidden');
   ui.gamePlaySection.classList.remove('hidden');
@@ -170,7 +174,9 @@ function evaluateChoice(choice) {
   updateScoreboard();
 
   lockChoices(true);
-  document.querySelectorAll('.details').forEach((btn) => btn.classList.remove('hidden'));
+  revealedPlayerIds.add(currentPlayer.id);
+  revealedPlayerIds.add(opponentPlayer.id);
+  updateRevealUI();
 }
 
 function goToNextRound() {
@@ -180,6 +186,7 @@ function goToNextRound() {
 
   const previousWinner = currentPlayer.total >= opponentPlayer.total ? currentPlayer : opponentPlayer;
   const previousCurrentWon = previousWinner.id === currentPlayer.id;
+  let hasReturningPlayer = true;
 
   if (previousCurrentWon) {
     if (consecutiveRounds >= MAX_STAY) {
@@ -187,6 +194,7 @@ function goToNextRound() {
       currentPlayer = getRandomDifferentPlayer(previousWinner);
       opponentPlayer = currentPlayer ? getRandomDifferentPlayer(currentPlayer) : null;
       consecutiveRounds = 1;
+      hasReturningPlayer = false;
     } else {
       // Current winner stays.
       currentPlayer = previousWinner;
@@ -205,9 +213,11 @@ function goToNextRound() {
     return;
   }
 
+  // Retain score visibility only for the returning player (always at pos 1)
+  revealedPlayerIds = hasReturningPlayer ? new Set([currentPlayer.id]) : new Set();
+
   ui.resultSection.classList.add('hidden');
   lockChoices(false);
-  document.querySelectorAll('.details').forEach((btn) => btn.classList.add('hidden'));
   prepareRound();
 }
 
@@ -256,6 +266,22 @@ function updateDuelCards() {
   } else if (badge2) {
     badge2.style.backgroundImage = 'none';
   }
+
+  updateRevealUI();
+}
+
+function updateRevealUI() {
+  const score1Revealed = revealedPlayerIds.has(currentPlayer.id);
+  const score2Revealed = revealedPlayerIds.has(opponentPlayer.id);
+
+  ui.player1Score.textContent = score1Revealed ? currentPlayer.total + ' pts' : '';
+  ui.player1Score.classList.toggle('hidden', !score1Revealed);
+
+  ui.player2Score.textContent = score2Revealed ? opponentPlayer.total + ' pts' : '';
+  ui.player2Score.classList.toggle('hidden', !score2Revealed);
+
+  document.querySelector('.details[data-player="1"]').classList.toggle('hidden', !score1Revealed);
+  document.querySelector('.details[data-player="2"]').classList.toggle('hidden', !score2Revealed);
 }
 
 function getTeamConfig(teamName) {

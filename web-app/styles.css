@@ -280,8 +280,16 @@ input {
 }
 
 .card h3 {
-  margin: 8px 0 14px;
+  margin: 8px 0 4px;
   animation: slideIn 0.3s ease-out;
+}
+
+.player-score {
+  margin: 0 0 12px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--brand);
+  letter-spacing: 0.02em;
 }
 
 @keyframes slideIn {
