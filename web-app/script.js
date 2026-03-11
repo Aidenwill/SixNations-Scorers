@@ -52,6 +52,8 @@ const ui = {
   playAgainBtn: document.getElementById('play-again'),
   player1Score: document.getElementById('player1-score'),
   player2Score: document.getElementById('player2-score'),
+  player1Years: document.getElementById('player1-years'),
+  player2Years: document.getElementById('player2-years'),
   roundNumber: document.getElementById('round-number'),
   currentStreak: document.getElementById('current-streak'),
   bestStreak: document.getElementById('best-streak'),
@@ -236,8 +238,10 @@ function updateScoreboard() {
 function updateDuelCards() {
   ui.player1Name.textContent = currentPlayer.name;
   ui.player1Team.textContent = currentPlayer.team;
+  ui.player1Years.textContent = getPlayerActivityYearsLabel(currentPlayer);
   ui.player2Name.textContent = opponentPlayer.name;
   ui.player2Team.textContent = opponentPlayer.team;
+  ui.player2Years.textContent = getPlayerActivityYearsLabel(opponentPlayer);
 
   // Update card backgrounds with team colors
   const card1 = document.querySelector('.card:first-of-type');
@@ -282,6 +286,24 @@ function updateRevealUI() {
 
   document.querySelector('.details[data-player="1"]').classList.toggle('hidden', !score1Revealed);
   document.querySelector('.details[data-player="2"]').classList.toggle('hidden', !score2Revealed);
+}
+
+function getPlayerActivityYearsLabel(player) {
+  const details = Array.isArray(player?.details) ? player.details : [];
+  const years = details
+    .map((d) => String(d.date || d.Date || '').slice(0, 4))
+    .map((year) => Number(year))
+    .filter((year) => Number.isInteger(year) && year >= 1883 && year <= 2100);
+
+  if (!years.length) {
+    return 'Activity: N/A';
+  }
+
+  const minYear = Math.min(...years);
+  const maxYear = Math.max(...years);
+  return minYear === maxYear
+    ? 'Activity: ' + minYear
+    : 'Activity: ' + minYear + ' - ' + maxYear;
 }
 
 function getTeamConfig(teamName) {
@@ -346,6 +368,44 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
+function normalizeScoreType(type) {
+  const raw = String(type || 'Unknown').trim().toLowerCase();
+  if (!raw) return 'unknown';
+
+  const compact = raw.replace(/[^a-z]/g, '');
+  const aliases = {
+    con: 'conversion',
+    conversion: 'conversion',
+    conversions: 'conversion',
+    pen: 'penalty',
+    penalty: 'penalty',
+    penalties: 'penalty',
+    dropgoal: 'drop goal',
+    dropgoals: 'drop goal',
+    dg: 'drop goal',
+    try: 'try',
+    tries: 'try'
+  };
+
+  return aliases[compact] || raw;
+}
+
+function formatScoreType(type, count) {
+  const normalized = normalizeScoreType(type);
+  const plural = count > 1;
+
+  let label = normalized;
+  if (plural) {
+    if (normalized === 'try') label = 'tries';
+    else if (normalized === 'penalty') label = 'penalties';
+    else if (normalized === 'conversion') label = 'conversions';
+    else if (normalized === 'drop goal') label = 'drop goals';
+    else label = normalized + 's';
+  }
+
+  return plural ? count + ' ' + label : label;
+}
+
 // Show player scoring details
 function showPlayerDetails(playerNum) {
   const player = playerNum === 1 ? currentPlayer : opponentPlayer;
@@ -359,12 +419,24 @@ function showPlayerDetails(playerNum) {
   `;
   
   if (player.details && Array.isArray(player.details) && player.details.length > 0) {
-    detailsHTML += '<h4>Scoring History:</h4><ul>';
+    // Group by date, aggregate points and count types
+    const byDate = new Map();
     player.details.forEach(d => {
       const date = d.date || d.Date || 'N/A';
-      const points = d.points || d.Points || 0;
-      const type = d.type || d.Type || 'Unknown';
-      detailsHTML += `<li>${escapeHtml(date)}: ${points} points (${escapeHtml(type)})</li>`;
+      const points = Number(d.points || d.Points || 0);
+      const type = normalizeScoreType(d.type || d.Type || 'Unknown');
+      if (!byDate.has(date)) byDate.set(date, { total: 0, types: new Map() });
+      const entry = byDate.get(date);
+      entry.total += points;
+      entry.types.set(type, (entry.types.get(type) || 0) + 1);
+    });
+
+    detailsHTML += '<h4>Scoring History:</h4><ul>';
+    byDate.forEach((entry, date) => {
+      const typeSummary = Array.from(entry.types.entries())
+        .map(([type, count]) => formatScoreType(type, count))
+        .join(', ');
+      detailsHTML += `<li>${escapeHtml(date)}: ${entry.total} points (${escapeHtml(typeSummary)})</li>`;
     });
     detailsHTML += '</ul>';
   } else {
