@@ -108,7 +108,6 @@ $players    = Get-PlayerScores -Matches $inputData
 if ($LookupNames) {
     foreach ($playerId in $players.Keys) {
         $players[$playerId].Name = Get-PlayerName -PlayerId $playerId
-        Start-Sleep -Milliseconds 200
     }
 }
 

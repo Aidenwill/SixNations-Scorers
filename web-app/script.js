@@ -1,5 +1,4 @@
 const DATA_FILE = 'players.json';
-const SCORE_KEY = 'sixNationsWebHighScores';
 const MAX_STAY = 2;
 
 // Team emblems and colors
@@ -43,20 +42,13 @@ let streak = 0;
 let bestStreak = 0;
 let roundsPlayed = 0;
 let consecutiveRounds = 0;
-let playerName = '';
-let highScores = [];
 
 const ui = {
-  playerInputSection: document.getElementById('player-input'),
   gamePlaySection: document.getElementById('game-play'),
   gameOverSection: document.getElementById('game-over'),
   resultSection: document.getElementById('result-section'),
-  highScoresList: document.getElementById('high-scores-list'),
-  startBtn: document.getElementById('start-game'),
   nextRoundBtn: document.getElementById('next-round'),
   playAgainBtn: document.getElementById('play-again'),
-  exportScoresBtn: document.getElementById('export-scores'),
-  playerNameInput: document.getElementById('player-name'),
   roundNumber: document.getElementById('round-number'),
   currentStreak: document.getElementById('current-streak'),
   bestStreak: document.getElementById('best-streak'),
@@ -83,11 +75,9 @@ async function initGame() {
       throw new Error('Donnees insuffisantes: minimum 2 joueurs');
     }
 
-    loadHighScores();
-    displayHighScores();
     setupEventListeners();
+    startGame();
   } catch (err) {
-    ui.highScoresList.innerHTML = '<p>Erreur au chargement des donnees.</p>';
     console.error(err);
   }
 }
@@ -105,10 +95,8 @@ function normalizePlayers(rawPlayers) {
 }
 
 function setupEventListeners() {
-  ui.startBtn.addEventListener('click', startGame);
   ui.nextRoundBtn.addEventListener('click', goToNextRound);
   ui.playAgainBtn.addEventListener('click', resetToStart);
-  ui.exportScoresBtn.addEventListener('click', exportScoresToJSON);
 
   document.querySelectorAll('.choice').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -123,21 +111,9 @@ function setupEventListeners() {
       showPlayerDetails(playerNum);
     });
   });
-
-  ui.playerNameInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-      startGame();
-    }
-  });
 }
 
 function startGame() {
-  playerName = ui.playerNameInput.value.trim();
-  if (!playerName) {
-    alert('Entre ton nom pour commencer.');
-    return;
-  }
-
   streak = 0;
   bestStreak = 0;
   roundsPlayed = 0;
@@ -145,7 +121,6 @@ function startGame() {
   currentPlayer = null;
   opponentPlayer = null;
 
-  ui.playerInputSection.classList.add('hidden');
   ui.gameOverSection.classList.add('hidden');
   ui.gamePlaySection.classList.remove('hidden');
   ui.resultSection.classList.add('hidden');
@@ -195,6 +170,7 @@ function evaluateChoice(choice) {
   updateScoreboard();
 
   lockChoices(true);
+  document.querySelectorAll('.details').forEach((btn) => btn.classList.remove('hidden'));
 }
 
 function goToNextRound() {
@@ -231,6 +207,7 @@ function goToNextRound() {
 
   ui.resultSection.classList.add('hidden');
   lockChoices(false);
+  document.querySelectorAll('.details').forEach((btn) => btn.classList.add('hidden'));
   prepareRound();
 }
 
@@ -328,52 +305,10 @@ function endGame(reason) {
     '<p>Meilleure serie: <strong>' + bestStreak + '</strong></p>' +
     '<p>' + reason + '</p>';
 
-  if (bestStreak > 0) {
-    saveHighScore(playerName, bestStreak);
-  }
 }
 
 function resetToStart() {
-  ui.gameOverSection.classList.add('hidden');
-  ui.playerInputSection.classList.remove('hidden');
-  ui.playerNameInput.value = playerName;
-}
-
-function loadHighScores() {
-  try {
-    const raw = localStorage.getItem(SCORE_KEY);
-    highScores = raw ? JSON.parse(raw) : [];
-    if (!Array.isArray(highScores)) {
-      highScores = [];
-    }
-  } catch {
-    highScores = [];
-  }
-}
-
-function saveHighScore(name, score) {
-  highScores.push({
-    name,
-    score,
-    date: new Date().toISOString().replace('T', ' ').slice(0, 19)
-  });
-
-  highScores.sort((a, b) => b.score - a.score);
-  highScores = highScores.slice(0, 10);
-  localStorage.setItem(SCORE_KEY, JSON.stringify(highScores));
-  displayHighScores();
-}
-
-function displayHighScores() {
-  if (!highScores.length) {
-    ui.highScoresList.innerHTML = '<p>No high scores yet. Be the first!</p>';
-    return;
-  }
-
-  const items = highScores
-    .map((entry) => '<li><strong>' + escapeHtml(entry.name) + '</strong> - ' + entry.score + ' (' + entry.date + ')</li>')
-    .join('');
-  ui.highScoresList.innerHTML = '<ol>' + items + '</ol>';
+  startGame();
 }
 
 function escapeHtml(value) {
@@ -427,26 +362,6 @@ function showPlayerDetails(playerNum) {
   document.querySelector('.close-modal').addEventListener('click', () => {
     document.querySelector('.player-details-modal').remove();
   });
-}
-
-// Export high scores to JSON file
-function exportScoresToJSON() {
-  if (highScores.length === 0) {
-    alert('No scores to export yet!');
-    return;
-  }
-  
-  const dataStr = JSON.stringify(highScores, null, 2);
-  const dataBlob = new Blob([dataStr], { type: 'application/json' });
-  const url = URL.createObjectURL(dataBlob);
-  
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'six-nations-high-scores-' + new Date().toISOString().slice(0, 10) + '.json';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
 }
 
 document.addEventListener('DOMContentLoaded', initGame);

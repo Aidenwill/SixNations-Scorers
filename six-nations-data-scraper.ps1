@@ -59,7 +59,10 @@ $matchIds = @(
     "982ad030-632d-457c-8536-50e973b83ff6",
     "2c3ca690-1a66-4a41-8017-0abcf2c052b6",
     "6d1bcf81-afc3-49c1-a82a-86658d9a3294",
-    "90f35611-bca8-4535-bcad-9a4760c14f46"
+    "90f35611-bca8-4535-bcad-9a4760c14f46",
+    "f8151d33-7687-4240-ad86-9b71a11768ca",
+    "6669956c-2c93-4d03-9554-715fafdbed06",
+    "2a29de97-b006-4987-9cbb-4cb88dcc453d"
 )
 
 $totalUuidMatches = $matchIds.Count  # 24 matches

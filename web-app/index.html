@@ -17,14 +17,6 @@
       <p class="subtitle">Choose the player with the most historical points.</p>
     </header>
 
-    <section id="player-input" class="panel">
-      <h2>Start a Game</h2>
-      <div class="row">
-        <input id="player-name" type="text" maxlength="24" placeholder="Your name">
-        <button id="start-game" class="btn primary">Play</button>
-      </div>
-    </section>
-
     <section id="game-play" class="panel hidden" aria-live="polite">
       <div class="stats">
         <div class="stat"><span>Round</span><strong id="round-number">0</strong></div>
@@ -37,7 +29,7 @@
           <div class="team-badge" id="badge1"></div>
           <p class="team" id="player1-team">Team</p>
           <h3 id="player1-name">Player 1</h3>
-          <button class="btn details" data-player="1">Details</button>
+          <button class="btn details hidden" data-player="1">Details</button>
           <button class="btn choice" data-choice="1">Choose this player</button>
         </article>
 
@@ -47,7 +39,7 @@
           <div class="team-badge" id="badge2"></div>
           <p class="team" id="player2-team">Team</p>
           <h3 id="player2-name">Player 2</h3>
-          <button class="btn details" data-player="2">Details</button>
+          <button class="btn details hidden" data-player="2">Details</button>
           <button class="btn choice" data-choice="2">Choose this player</button>
         </article>
       </div>
@@ -65,11 +57,7 @@
       <button id="play-again" class="btn primary">Play Again</button>
     </section>
 
-    <section class="panel">
-      <h2>High Scores</h2>
-      <div id="high-scores-list" class="scores"></div>
-      <button id="export-scores" class="btn secondary">Export Scores (JSON)</button>
-    </section>
+
   </main>
 
   <script src="script.js"></script>
