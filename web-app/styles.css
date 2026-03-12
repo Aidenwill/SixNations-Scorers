@@ -22,15 +22,28 @@ body {
   font-family: Georgia, "Times New Roman", serif;
   color: var(--ink);
   background:
-    linear-gradient(135deg, rgba(255,255,255,0.1) 25%, transparent 25%),
-    linear-gradient(225deg, rgba(255,255,255,0.1) 25%, transparent 25%),
-    linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%),
-    linear-gradient(315deg, rgba(255,255,255,0.1) 25%, transparent 25%),
-    radial-gradient(circle at 15% 15%, #efe8d6 0%, transparent 35%),
-    radial-gradient(circle at 85% 10%, #dbe7df 0%, transparent 40%),
-    linear-gradient(160deg, #f4f5f2 0%, #e9ece4 100%);
-  background-size: 60px 60px, 60px 60px, 60px 60px, 60px 60px, 100% 100%, 100% 100%, 100% 100%;
-  background-position: 0 0, 30px 0, 30px -30px, 0 30px, 0 0, 0 0, 0 0;
+    radial-gradient(circle at 50% -8%, rgba(255, 250, 220, 0.28) 0%, rgba(255, 250, 220, 0.08) 22%, rgba(255, 250, 220, 0) 42%),
+    radial-gradient(circle at 14% 10%, rgba(132, 185, 255, 0.12) 0%, rgba(132, 185, 255, 0) 30%),
+    radial-gradient(circle at 86% 12%, rgba(132, 185, 255, 0.1) 0%, rgba(132, 185, 255, 0) 28%),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 100%),
+    repeating-linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.035) 0,
+      rgba(255, 255, 255, 0.035) 70px,
+      rgba(255, 255, 255, 0.01) 70px,
+      rgba(255, 255, 255, 0.01) 140px
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.032) 0,
+      rgba(255, 255, 255, 0.032) 1px,
+      transparent 1px,
+      transparent 96px
+    ),
+    linear-gradient(180deg, rgba(7, 16, 36, 0.28) 0%, rgba(7, 16, 36, 0.08) 24%, rgba(7, 16, 36, 0) 100%),
+    linear-gradient(165deg, #1c3f39 0%, #17352f 45%, #102722 100%);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 280px 100%, 100% 96px, 100% 100%;
+  background-position: center center;
   position: relative;
   overflow-x: hidden;
 }
@@ -39,14 +52,14 @@ body {
   position: fixed;
   border-radius: 999px;
   filter: blur(16px);
-  opacity: 0.3;
+  opacity: 0.16;
   pointer-events: none;
 }
 
 .bg-a {
   width: 280px;
   height: 280px;
-  background: #dcae55;
+  background: #f3e4a1;
   top: -90px;
   right: -70px;
 }
@@ -54,7 +67,7 @@ body {
 .bg-b {
   width: 260px;
   height: 260px;
-  background: #3f6d76;
+  background: #5da38c;
   bottom: -100px;
   left: -80px;
 }
@@ -82,7 +95,8 @@ body {
   align-items: center;
   gap: 8px;
   font-size: 0.85rem;
-  color: #3e4540;
+  color: rgba(244, 247, 242, 0.92);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.28);
 }
 
 .language-indicator {
@@ -102,34 +116,38 @@ body {
 
 .language-picker select {
   font: inherit;
-  color: var(--ink);
-  background: #f8f9f5;
-  border: 1px solid #bfc6b7;
+  color: #f6f8f4;
+  background: rgba(12, 26, 24, 0.58);
+  border: 1px solid rgba(233, 238, 230, 0.26);
   border-radius: 8px;
   padding: 6px 8px;
+  backdrop-filter: blur(8px);
 }
 
 .eyebrow {
   font-size: 0.85rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #4c555d;
+  color: rgba(245, 247, 241, 0.88);
   margin: 0;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.32);
 }
 
 h1 {
   margin: 8px 0 6px;
   font-size: clamp(2.1rem, 4vw, 3.4rem);
   line-height: 0.95;
-  background: linear-gradient(135deg, var(--brand), var(--brand-2), var(--accent));
+  background: linear-gradient(135deg, #f8f6ea, #dff2eb, #f2cf88);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.22);
 }
 
 .subtitle {
   margin: 0;
-  color: #3e4540;
+  color: rgba(241, 245, 239, 0.9);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.28);
 }
 
 .info-panel {
@@ -247,9 +265,15 @@ input {
 .activity-toggle-row {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 10px;
   margin-bottom: 10px;
+}
+
+.activity-toggle-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .activity-toggle-label {
@@ -480,6 +504,11 @@ input {
   }
 
   .activity-toggle-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .activity-toggle-control {
     justify-content: flex-start;
   }
 }

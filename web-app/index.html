@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Six Nations Scoring Quiz</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon-rugby.svg">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -23,6 +24,9 @@
             <option value="fr">Francais</option>
             <option value="en">English</option>
             <option value="it">Italiano</option>
+            <option value="cy">Cymraeg</option>
+            <option value="ga">Gaeilge</option>
+            <option value="gd">Gaidhlig</option>
           </select>
         </label>
       </div>
@@ -39,11 +43,14 @@
 
     <section id="game-play" class="panel hidden" aria-live="polite">
       <div class="activity-toggle-row">
-        <span id="activity-toggle-label" class="activity-toggle-label">Show activity</span>
-        <label class="switch" for="activity-visibility-toggle" aria-label="Show activity">
-          <input id="activity-visibility-toggle" type="checkbox" checked>
-          <span class="slider"></span>
-        </label>
+        <div class="activity-toggle-control">
+          <span id="activity-toggle-label" class="activity-toggle-label">Show activity</span>
+          <label class="switch" for="activity-visibility-toggle" aria-label="Show activity">
+            <input id="activity-visibility-toggle" type="checkbox" checked>
+            <span class="slider"></span>
+          </label>
+        </div>
+        <button id="share-score" class="btn secondary">Share</button>
       </div>
 
       <div class="stats">

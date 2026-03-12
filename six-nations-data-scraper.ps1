@@ -1,6 +1,10 @@
 # Script to scrape rugby match data from World Rugby API for Six Nations and Five Nations competitions
 # Outputs player scoring data to a JSON file
 
+param(
+    [switch]$OnlyAlreadyRecordedMatches
+)
+
 # Output file path
 $outputFile = "six-nations-scoring-data.json"
 # Checkpoint file to track progress
@@ -22,12 +26,24 @@ if (Test-Path $outputFile) {
 $checkpoint = @{
     processedSequential = 249  # Start before 250
     processedUuids = @()
+    recordedMatchIds = @()
 }
 if (Test-Path $checkpointFile) {
     $checkpointData = Get-Content $checkpointFile | ConvertFrom-Json
     if ($checkpointData) {
         $checkpoint = $checkpointData
     }
+}
+
+# Backward compatibility for older checkpoint files
+if (-not ($checkpoint.PSObject.Properties.Name -contains "processedSequential")) {
+    $checkpoint | Add-Member -MemberType NoteProperty -Name processedSequential -Value 249
+}
+if (-not ($checkpoint.PSObject.Properties.Name -contains "processedUuids")) {
+    $checkpoint | Add-Member -MemberType NoteProperty -Name processedUuids -Value @()
+}
+if (-not ($checkpoint.PSObject.Properties.Name -contains "recordedMatchIds")) {
+    $checkpoint | Add-Member -MemberType NoteProperty -Name recordedMatchIds -Value @()
 }
 
 # Progress tracking
@@ -88,6 +104,14 @@ function ShowProgress {
     Write-Host "Progress: $currentId / $total ($percentage%) - $type matches processed"
 }
 
+# Function to add a match ID once to checkpoint
+function AddRecordedMatchId {
+    param($matchId)
+    if ($matchId -and ($matchId -notin $script:checkpoint.recordedMatchIds)) {
+        $script:checkpoint.recordedMatchIds += [string]$matchId
+    }
+}
+
 # Function to process scoring data for a team
 function ProcessTeamScoring {
     param($teamScoring)
@@ -123,6 +147,7 @@ function ProcessMatch {
 
                 # Create structured data object for the match
                 $filteredData = @{
+                    matchId = [string]$matchId
                     date = $response.match.time.label
                     competition = $competition
                     teams = @(
@@ -139,6 +164,7 @@ function ProcessMatch {
 
                 # Add to results array
                 $script:results += $filteredData
+                AddRecordedMatchId $matchId
                 Write-Host "Match $matchId added: $competition"
 
                 # Update progress counter
@@ -163,36 +189,62 @@ function ProcessMatch {
     }
 }
 
-# Process sequential match IDs (historical matches), resuming from checkpoint
-Write-Host "Starting sequential matches processing from $($checkpoint.processedSequential + 1) to 32000..."
-for ($matchId = $checkpoint.processedSequential + 1; $matchId -le 32000; $matchId++) {
-    ProcessMatch $matchId
-    # Update checkpoint for sequential matches
-    $checkpoint.processedSequential = $matchId
-    SaveCheckpoint
+if ($OnlyAlreadyRecordedMatches) {
+    # Rebuild results only from already recorded IDs in checkpoint
+    $results = @()
+    $recordedMatchIds = @($checkpoint.recordedMatchIds | Select-Object -Unique)
+    $totalRecordedMatches = $recordedMatchIds.Count
 
-    # Show progress for sequential matches every 500 matches
-    if ($matchId % 500 -eq 0) {
-        ShowProgress ($matchId - 249) $totalSequentialMatches "Sequential"
-    }
-}
-Write-Host "Sequential matches processing completed."
+    Write-Host "OnlyAlreadyRecordedMatches enabled. Processing $totalRecordedMatches recorded matches from checkpoint..."
 
-# Process specific match IDs (recent matches with UUIDs), skipping already processed
-Write-Host "Starting UUID matches processing ($totalUuidMatches matches)..."
-$uuidProcessed = 0
-foreach ($matchId in $matchIds) {
-    if ($matchId -notin $checkpoint.processedUuids) {
-        ProcessMatch $matchId
-        # Mark as processed
-        $checkpoint.processedUuids += $matchId
-        SaveCheckpoint
-        $uuidProcessed++
+    if ($totalRecordedMatches -eq 0) {
+        Write-Host "No recorded match IDs found in checkpoint."
     } else {
-        Write-Host "Skipping already processed match: $matchId"
+        $recordedProcessed = 0
+        foreach ($matchId in $recordedMatchIds) {
+            ProcessMatch $matchId
+            SaveCheckpoint
+            $recordedProcessed++
+
+            if ($recordedProcessed % 50 -eq 0) {
+                ShowProgress $recordedProcessed $totalRecordedMatches "Recorded"
+            }
+        }
+        Write-Host "Recorded matches processing completed. Processed $recordedProcessed matches."
     }
 }
-Write-Host "UUID matches processing completed. Processed $uuidProcessed new matches."
+else {
+    # Process sequential match IDs (historical matches), resuming from checkpoint
+    Write-Host "Starting sequential matches processing from $($checkpoint.processedSequential + 1) to 32000..."
+    for ($matchId = $checkpoint.processedSequential + 1; $matchId -le 32000; $matchId++) {
+        ProcessMatch $matchId
+        # Update checkpoint for sequential matches
+        $checkpoint.processedSequential = $matchId
+        SaveCheckpoint
+
+        # Show progress for sequential matches every 500 matches
+        if ($matchId % 500 -eq 0) {
+            ShowProgress ($matchId - 249) $totalSequentialMatches "Sequential"
+        }
+    }
+    Write-Host "Sequential matches processing completed."
+
+    # Process specific match IDs (recent matches with UUIDs), skipping already processed
+    Write-Host "Starting UUID matches processing ($totalUuidMatches matches)..."
+    $uuidProcessed = 0
+    foreach ($matchId in $matchIds) {
+        if ($matchId -notin $checkpoint.processedUuids) {
+            ProcessMatch $matchId
+            # Mark as processed
+            $checkpoint.processedUuids += $matchId
+            SaveCheckpoint
+            $uuidProcessed++
+        } else {
+            Write-Host "Skipping already processed match: $matchId"
+        }
+    }
+    Write-Host "UUID matches processing completed. Processed $uuidProcessed new matches."
+}
 
 # Final save of results
 SaveResults

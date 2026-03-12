@@ -5,7 +5,7 @@ Interactive web application to guess which Six Nations player scored the most po
 ## Features
 
 ### Multilingual Interface
-- Language selector in the header (FR / EN / IT)
+- Language selector in the header (FR / EN / IT / CY / GA / GD)
 - Interface texts update instantly without reloading
 - Team names are translated with the selected language
 - Selected language is saved in localStorage

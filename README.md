@@ -36,7 +36,7 @@ When you push to `main`, GitHub Actions deploys [web-app](web-app) to GitHub Pag
 
 #### Multilingual interface
 - Language selector in the header
-- Available languages: French, English, Italian
+- Available languages: French, English, Italian, Welsh, Irish, Scottish Gaelic
 - Interface texts and team names update instantly
 - Selected language is saved in localStorage
 

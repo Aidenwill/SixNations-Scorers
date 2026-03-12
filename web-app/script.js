@@ -1,7 +1,7 @@
 const DATA_FILE = 'players.json';
 const MAX_STAY = 2;
 
-const SUPPORTED_LANGUAGES = ['fr', 'en', 'it'];
+const SUPPORTED_LANGUAGES = ['fr', 'en', 'it', 'cy', 'ga', 'gd'];
 const LANGUAGE_STORAGE_KEY = 'sixnations_language';
 const ACTIVITY_VISIBILITY_STORAGE_KEY = 'sixnations_show_activity';
 
@@ -30,6 +30,14 @@ const I18N = {
     activityNA: 'Activite : N/A',
     activityHidden: 'Activite : masquee',
     showActivity: 'Afficher activite',
+    share: 'Partager',
+    copied: 'Copie !',
+    copyFailed: 'Echec copie',
+    activityVisibleState: 'affichee',
+    activityHiddenState: 'masquee',
+    bestFlagsLabel: 'nations',
+    noFlags: 'aucune',
+    shareSummary: 'Six Nations Scoring Duel - manche {round}, serie {streak}, meilleure serie {bestStreak}, activite {activity}, {bestFlagsLabel} {flags}.',
     unknown: 'Inconnu',
     playerDetailsTitle: 'Details du joueur',
     totalPoints: 'Total des points',
@@ -76,6 +84,14 @@ const I18N = {
     activityNA: 'Activity: N/A',
     activityHidden: 'Activity: hidden',
     showActivity: 'Show activity',
+    share: 'Share',
+    copied: 'Copied!',
+    copyFailed: 'Copy failed',
+    activityVisibleState: 'visible',
+    activityHiddenState: 'hidden',
+    bestFlagsLabel: 'nations',
+    noFlags: 'none',
+    shareSummary: 'Six Nations Scoring Duel - round {round}, streak {streak}, best streak {bestStreak}, activity {activity}, {bestFlagsLabel} {flags}.',
     unknown: 'Unknown',
     playerDetailsTitle: 'Player details',
     totalPoints: 'Total Points',
@@ -122,6 +138,14 @@ const I18N = {
     activityNA: 'Attivita: N/A',
     activityHidden: 'Attivita: nascosta',
     showActivity: 'Mostra attivita',
+    share: 'Condividi',
+    copied: 'Copiato!',
+    copyFailed: 'Copia fallita',
+    activityVisibleState: 'visibile',
+    activityHiddenState: 'nascosta',
+    bestFlagsLabel: 'nazioni',
+    noFlags: 'nessuna',
+    shareSummary: 'Six Nations Scoring Duel - turno {round}, serie {streak}, serie migliore {bestStreak}, attivita {activity}, {bestFlagsLabel} {flags}.',
     unknown: 'Sconosciuto',
     playerDetailsTitle: 'Dettagli giocatore',
     totalPoints: 'Punti totali',
@@ -141,6 +165,168 @@ const I18N = {
     penalties: 'calci di punizione',
     conversion: 'trasformazione',
     conversions: 'trasformazioni',
+    dropGoal: 'drop goal',
+    dropGoals: 'drop goals'
+  },
+  cy: {
+    languageLabel: 'Iaith',
+    title: 'Scoring Duel',
+    subtitle: "Dewisa'r chwaraewr gyda'r mwyaf o bwyntiau.",
+    infoText: 'Gemau wedi eu cynnwys: o 01-01-1971 i 09-03-2026. Cyn 1992, roedd cais yn werth 4 pwynt.',
+    round: 'Rownd',
+    streak: 'Cyfres',
+    bestStreak: 'Cyfres orau',
+    choosePlayer: "Dewis y chwaraewr hwn",
+    details: 'Manylion',
+    nextRound: 'Rownd nesaf',
+    gameOver: 'Gêm drosodd',
+    playAgain: 'Chwarae eto',
+    resultCorrect: 'Cywir!',
+    resultWrong: 'Anghywir!',
+    resultDetail: 'Mae gan {name} ({team}) {total} pwynt.',
+    noMoreDuels: "Dim mwy o ddeuawdau posibl gyda'r data presennol.",
+    unableNewDuel: 'Methu dod o hyd i ddeuawd newydd.',
+    roundsPlayed: 'Rowndiau wedi eu chwarae',
+    finalStreak: 'Cyfres derfynol',
+    activityLabel: 'Gweithgaredd',
+    activityNA: 'Gweithgaredd: D/A',
+    activityHidden: 'Gweithgaredd: cudd',
+    showActivity: 'Dangos gweithgaredd',
+    share: 'Rhannu',
+    copied: 'Wedi copïo!',
+    copyFailed: 'Methodd y copi',
+    activityVisibleState: 'gweladwy',
+    activityHiddenState: 'cudd',
+    bestFlagsLabel: 'cenhedloedd',
+    noFlags: 'dim',
+    shareSummary: 'Six Nations Scoring Duel - rownd {round}, cyfres {streak}, cyfres orau {bestStreak}, gweithgaredd {activity}, {bestFlagsLabel} {flags}.',
+    unknown: 'Anhysbys',
+    playerDetailsTitle: 'Manylion y chwaraewr',
+    totalPoints: 'Cyfanswm pwyntiau',
+    scoringHistory: 'Hanes sgorio',
+    noScoringHistory: 'Dim hanes sgorio manwl ar gael',
+    close: 'Cau',
+    pointsWord: 'pwyntiau',
+    teamEngland: 'Lloegr',
+    teamFrance: 'Ffrainc',
+    teamWales: 'Cymru',
+    teamScotland: 'Yr Alban',
+    teamIreland: 'Iwerddon',
+    teamItaly: 'Yr Eidal',
+    try: 'cais',
+    tries: 'ceisiadau',
+    penalty: 'cosb',
+    penalties: 'cosbau',
+    conversion: 'trosi',
+    conversions: 'trosiadau',
+    dropGoal: 'gôl ostwng',
+    dropGoals: 'goliau ostwng'
+  },
+  ga: {
+    languageLabel: 'Teanga',
+    title: 'Scoring Duel',
+    subtitle: 'Roghnaigh an t-imreoir leis na pointi is mo.',
+    infoText: 'Cluichi san aireamh: o 01-01-1971 go 09-03-2026. Roimh 1992, bhi triail ar luach 4 phointe.',
+    round: 'Babhta',
+    streak: 'Sraith',
+    bestStreak: 'An tsraith is fearr',
+    choosePlayer: 'Roghnaigh an t-imreoir seo',
+    details: 'Sonrai',
+    nextRound: 'An chead bhabhta eile',
+    gameOver: 'Cluiche thart',
+    playAgain: 'Imir aris',
+    resultCorrect: 'Ceart!',
+    resultWrong: 'Micheart!',
+    resultDetail: 'Ta {total} pointe ag {name} ({team}).',
+    noMoreDuels: 'Níl aon dulaiochta eile indanta leis na sonrai reatha.',
+    unableNewDuel: 'Niorbh fhéidir duliocht nua a aimsiu.',
+    roundsPlayed: 'Babhtai imeartha',
+    finalStreak: 'Sraith dheiridh',
+    activityLabel: 'Gniomhaiocht',
+    activityNA: 'Gniomhaiocht: N/A',
+    activityHidden: 'Gniomhaiocht: folaithe',
+    showActivity: 'Taispeain gniomhaiocht',
+    share: 'Roinn',
+    copied: 'Coipealaithe!',
+    copyFailed: 'Theip ar an gcoipeail',
+    activityVisibleState: 'le feiceail',
+    activityHiddenState: 'folaithe',
+    bestFlagsLabel: 'naisiuin',
+    noFlags: 'gan cheann',
+    shareSummary: 'Six Nations Scoring Duel - babhta {round}, sraith {streak}, an tsraith is fearr {bestStreak}, gniomhaiocht {activity}, {bestFlagsLabel} {flags}.',
+    unknown: 'Anaithnid',
+    playerDetailsTitle: 'Sonrai an imreora',
+    totalPoints: 'Pointi iomlani',
+    scoringHistory: 'Stair scoralai',
+    noScoringHistory: 'Níl stair mionsonraithe scoralai ar fail',
+    close: 'Dun',
+    pointsWord: 'pointi',
+    teamEngland: 'Sasana',
+    teamFrance: 'An Fhrainc',
+    teamWales: 'An Bhreatain Bheag',
+    teamScotland: 'Albain',
+    teamIreland: 'Eire',
+    teamItaly: 'An Iodail',
+    try: 'triail',
+    tries: 'trialacha',
+    penalty: 'pionos',
+    penalties: 'pionois',
+    conversion: 'tiontu',
+    conversions: 'tiontaithe',
+    dropGoal: 'cic tite',
+    dropGoals: 'ciceanna tite'
+  },
+  gd: {
+    languageLabel: 'Canan',
+    title: 'Scoring Duel',
+    subtitle: 'Tagh an cluicheadair leis na puingean as motha.',
+    infoText: 'Geamannan air an toirt a-steach: bho 01-01-1971 gu 09-03-2026. Ro 1992, bha luach 4 puingean air try.',
+    round: 'Cuairt',
+    streak: 'Sreath',
+    bestStreak: 'An t-sreath as fhearr',
+    choosePlayer: 'Tagh an cluicheadair seo',
+    details: 'Mion-fhiosrachadh',
+    nextRound: 'An ath chuairt',
+    gameOver: 'Geam seachad',
+    playAgain: 'Cluich a-rithist',
+    resultCorrect: 'Ceart!',
+    resultWrong: 'Cearr!',
+    resultDetail: 'Tha {total} puing aig {name} ({team}).',
+    noMoreDuels: 'Chan eil duel sam bith eile comasach leis an data làithreach.',
+    unableNewDuel: 'Cha b urrainn duel ur a lorg.',
+    roundsPlayed: 'Cuairtean air an cluich',
+    finalStreak: 'Sreath dheireannach',
+    activityLabel: 'Gniomhachd',
+    activityNA: 'Gniomhachd: N/A',
+    activityHidden: 'Gniomhachd: falaichte',
+    showActivity: 'Seall gniomhachd',
+    share: 'Co-roinn',
+    copied: 'Air a chopaigeadh!',
+    copyFailed: 'Dh fhàillig an copaidh',
+    activityVisibleState: 'ri fhaicinn',
+    activityHiddenState: 'falaichte',
+    bestFlagsLabel: 'duthchannan',
+    noFlags: 'chan eil gin',
+    shareSummary: 'Six Nations Scoring Duel - cuairt {round}, sreath {streak}, an t-sreath as fhearr {bestStreak}, gniomhachd {activity}, {bestFlagsLabel} {flags}.',
+    unknown: 'Neo-aithnichte',
+    playerDetailsTitle: 'Mion-fhiosrachadh cluicheadair',
+    totalPoints: 'Puingean iomlan',
+    scoringHistory: 'Eachdraidh sgoraidh',
+    noScoringHistory: 'Chan eil eachdraidh sgoraidh mhionaideach ri fhaighinn',
+    close: 'Dun',
+    pointsWord: 'puingean',
+    teamEngland: 'Sasainn',
+    teamFrance: 'An Fhraing',
+    teamWales: 'A Chuimrigh',
+    teamScotland: 'Alba',
+    teamIreland: 'Eirinn',
+    teamItaly: 'An Eadailt',
+    try: 'try',
+    tries: 'trys',
+    penalty: 'peanas',
+    penalties: 'peanasan',
+    conversion: 'tionndadh',
+    conversions: 'tionndaidhean',
     dropGoal: 'drop goal',
     dropGoals: 'drop goals'
   }
@@ -190,6 +376,18 @@ let consecutiveRounds = 0;
 let revealedPlayerIds = new Set();
 let currentLanguage = 'fr';
 let showActivity = true;
+let shareButtonFeedbackTimeout = null;
+let currentStreakTeams = [];
+let bestStreakTeams = [];
+
+const TEAM_FLAG_EMOJIS = {
+  England: '🏴 ENG',
+  France: '🇫🇷',
+  Wales: '🏴 WAL',
+  Scotland: '🏴 SCO',
+  Ireland: '🇮🇪',
+  Italy: '🇮🇹'
+};
 
 const ui = {
   gamePlaySection: document.getElementById('game-play'),
@@ -215,7 +413,8 @@ const ui = {
   detailBtn2: document.querySelector('.details[data-player="2"]'),
   languageSelect: document.getElementById('language-select'),
   currentLanguageFlag: document.getElementById('current-language-flag'),
-  activityVisibilityToggle: document.getElementById('activity-visibility-toggle')
+  activityVisibilityToggle: document.getElementById('activity-visibility-toggle'),
+  shareScoreBtn: document.getElementById('share-score')
 };
 
 function resolveInitialLanguage() {
@@ -249,7 +448,10 @@ function getLanguageFlagConfig(language) {
   const flagConfig = {
     fr: { src: 'assets/flags/fr.png', alt: 'Francais' },
     en: { src: 'assets/flags/gb-eng.png', alt: 'English' },
-    it: { src: 'assets/flags/it.png', alt: 'Italiano' }
+    it: { src: 'assets/flags/it.png', alt: 'Italiano' },
+    cy: { src: 'assets/flags/gb-wls.png', alt: 'Cymraeg' },
+    ga: { src: 'assets/flags/ie.png', alt: 'Gaeilge' },
+    gd: { src: 'assets/flags/gb-sct.png', alt: 'Gaidhlig' }
   };
 
   return flagConfig[language] || flagConfig.fr;
@@ -305,6 +507,7 @@ function applyTranslations() {
   if (ui.detailBtn2) ui.detailBtn2.textContent = t('details');
   if (ui.nextRoundBtn) ui.nextRoundBtn.textContent = t('nextRound');
   if (ui.playAgainBtn) ui.playAgainBtn.textContent = t('playAgain');
+  if (ui.shareScoreBtn) ui.shareScoreBtn.textContent = t('share');
 
   const gameOverTitle = byId('game-over-title');
   if (gameOverTitle) gameOverTitle.textContent = t('gameOver');
@@ -326,12 +529,58 @@ function updateLanguage(language) {
 }
 
 function updateActivityVisibility(isVisible) {
+  const previousVisibility = showActivity;
   showActivity = Boolean(isVisible);
   localStorage.setItem(ACTIVITY_VISIBILITY_STORAGE_KEY, String(showActivity));
+
+  // Any change in activity visibility resets the game to keep scoring comparable.
+  if (previousVisibility !== showActivity) {
+    resetToStart();
+    return;
+  }
 
   if (currentPlayer && opponentPlayer) {
     ui.player1Years.textContent = getActivityYearsText(currentPlayer.details);
     ui.player2Years.textContent = getActivityYearsText(opponentPlayer.details);
+  }
+}
+
+function buildShareSummary() {
+  return t('shareSummary', {
+    round: roundsPlayed,
+    streak: streak,
+    bestStreak: bestStreak,
+    activity: showActivity ? t('activityVisibleState') : t('activityHiddenState'),
+    bestFlagsLabel: t('bestFlagsLabel'),
+    flags: getBestStreakFlagsSummary()
+  });
+}
+
+function setShareButtonFeedback(labelKey) {
+  if (!ui.shareScoreBtn) {
+    return;
+  }
+
+  ui.shareScoreBtn.textContent = t(labelKey);
+  if (shareButtonFeedbackTimeout) {
+    clearTimeout(shareButtonFeedbackTimeout);
+  }
+
+  shareButtonFeedbackTimeout = setTimeout(() => {
+    ui.shareScoreBtn.textContent = t('share');
+    shareButtonFeedbackTimeout = null;
+  }, 1600);
+}
+
+async function shareCurrentScore() {
+  const summary = buildShareSummary();
+
+  try {
+    await navigator.clipboard.writeText(summary);
+    setShareButtonFeedback('copied');
+  } catch (error) {
+    console.error(error);
+    setShareButtonFeedback('copyFailed');
   }
 }
 
@@ -400,9 +649,47 @@ function getLocalizedTeamName(teamName) {
   return translationKey ? t(translationKey) : String(teamName || t('unknown'));
 }
 
+function getCanonicalTeamName(teamName) {
+  const normalized = String(teamName || '').trim().toLowerCase();
+  const aliasMap = {
+    england: 'England',
+    france: 'France',
+    wales: 'Wales',
+    scotland: 'Scotland',
+    ireland: 'Ireland',
+    italy: 'Italy'
+  };
+
+  if (aliasMap[normalized]) {
+    return aliasMap[normalized];
+  }
+
+  const matchedKey = Object.keys(aliasMap).find((key) => normalized.includes(key));
+  return matchedKey ? aliasMap[matchedKey] : null;
+}
+
+function getTeamFlagEmoji(teamName) {
+  const canonicalTeamName = getCanonicalTeamName(teamName);
+  return canonicalTeamName ? TEAM_FLAG_EMOJIS[canonicalTeamName] : null;
+}
+
+function getBestStreakFlagsSummary() {
+  const flags = bestStreakTeams
+    .map((teamName) => getTeamFlagEmoji(teamName))
+    .filter(Boolean)
+    .join(' ');
+
+  return flags || t('noFlags');
+}
+
 function setupEventListeners() {
   ui.nextRoundBtn.addEventListener('click', goToNextRound);
   ui.playAgainBtn.addEventListener('click', resetToStart);
+  if (ui.shareScoreBtn) {
+    ui.shareScoreBtn.addEventListener('click', () => {
+      shareCurrentScore();
+    });
+  }
   if (ui.languageSelect) {
     ui.languageSelect.addEventListener('change', (event) => {
       updateLanguage(event.target.value);
@@ -437,10 +724,13 @@ function startGame() {
   currentPlayer = null;
   opponentPlayer = null;
   revealedPlayerIds = new Set();
+  currentStreakTeams = [];
+  bestStreakTeams = [];
 
   ui.gameOverSection.classList.add('hidden');
   ui.gamePlaySection.classList.remove('hidden');
   ui.resultSection.classList.add('hidden');
+  lockChoices(false);
 
   prepareRound();
 }
@@ -473,11 +763,16 @@ function evaluateChoice(choice) {
 
   if (isCorrect) {
     streak += 1;
+    currentStreakTeams.push(winner.team);
     bestStreak = Math.max(bestStreak, streak);
+    if (streak === bestStreak) {
+      bestStreakTeams = [...currentStreakTeams];
+    }
     ui.resultMessage.textContent = t('resultCorrect');
     ui.resultMessage.style.color = '#1f6a5f';
   } else {
     streak = 0;
+    currentStreakTeams = [];
     ui.resultMessage.textContent = t('resultWrong');
     ui.resultMessage.style.color = '#af3f2b';
   }
