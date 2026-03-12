@@ -3,6 +3,7 @@ const MAX_STAY = 2;
 
 const SUPPORTED_LANGUAGES = ['fr', 'en', 'it'];
 const LANGUAGE_STORAGE_KEY = 'sixnations_language';
+const ACTIVITY_VISIBILITY_STORAGE_KEY = 'sixnations_show_activity';
 
 const I18N = {
   fr: {
@@ -27,6 +28,8 @@ const I18N = {
     finalStreak: 'Serie finale',
     activityLabel: 'Activite',
     activityNA: 'Activite : N/A',
+    activityHidden: 'Activite : masquee',
+    showActivity: 'Afficher activite',
     unknown: 'Inconnu',
     playerDetailsTitle: 'Details du joueur',
     totalPoints: 'Total des points',
@@ -71,6 +74,8 @@ const I18N = {
     finalStreak: 'Final streak',
     activityLabel: 'Activity',
     activityNA: 'Activity: N/A',
+    activityHidden: 'Activity: hidden',
+    showActivity: 'Show activity',
     unknown: 'Unknown',
     playerDetailsTitle: 'Player details',
     totalPoints: 'Total Points',
@@ -115,6 +120,8 @@ const I18N = {
     finalStreak: 'Serie finale',
     activityLabel: 'Attivita',
     activityNA: 'Attivita: N/A',
+    activityHidden: 'Attivita: nascosta',
+    showActivity: 'Mostra attivita',
     unknown: 'Sconosciuto',
     playerDetailsTitle: 'Dettagli giocatore',
     totalPoints: 'Punti totali',
@@ -182,6 +189,7 @@ let roundsPlayed = 0;
 let consecutiveRounds = 0;
 let revealedPlayerIds = new Set();
 let currentLanguage = 'fr';
+let showActivity = true;
 
 const ui = {
   gamePlaySection: document.getElementById('game-play'),
@@ -206,7 +214,8 @@ const ui = {
   detailBtn1: document.querySelector('.details[data-player="1"]'),
   detailBtn2: document.querySelector('.details[data-player="2"]'),
   languageSelect: document.getElementById('language-select'),
-  currentLanguageFlag: document.getElementById('current-language-flag')
+  currentLanguageFlag: document.getElementById('current-language-flag'),
+  activityVisibilityToggle: document.getElementById('activity-visibility-toggle')
 };
 
 function resolveInitialLanguage() {
@@ -217,6 +226,14 @@ function resolveInitialLanguage() {
 
   const browserLanguage = String(navigator.language || 'fr').slice(0, 2).toLowerCase();
   return SUPPORTED_LANGUAGES.includes(browserLanguage) ? browserLanguage : 'fr';
+}
+
+function resolveInitialActivityVisibility() {
+  const stored = localStorage.getItem(ACTIVITY_VISIBILITY_STORAGE_KEY);
+  if (stored === null) {
+    return true;
+  }
+  return stored === 'true';
 }
 
 function t(key, replacements = {}) {
@@ -271,6 +288,13 @@ function applyTranslations() {
   const labelBestStreak = byId('label-best-streak');
   if (labelBestStreak) labelBestStreak.textContent = t('bestStreak');
 
+  const activityToggleLabel = byId('activity-toggle-label');
+  if (activityToggleLabel) activityToggleLabel.textContent = t('showActivity');
+  if (ui.activityVisibilityToggle) {
+    ui.activityVisibilityToggle.checked = showActivity;
+    ui.activityVisibilityToggle.setAttribute('aria-label', t('showActivity'));
+  }
+
   const choose1 = byId('choose-player-1');
   if (choose1) choose1.textContent = t('choosePlayer');
 
@@ -288,8 +312,8 @@ function applyTranslations() {
   if (currentPlayer && opponentPlayer) {
     ui.player1Team.textContent = getLocalizedTeamName(currentPlayer.team);
     ui.player2Team.textContent = getLocalizedTeamName(opponentPlayer.team);
-    ui.player1Years.textContent = computeActivityYearsLabel(currentPlayer.details);
-    ui.player2Years.textContent = computeActivityYearsLabel(opponentPlayer.details);
+    ui.player1Years.textContent = getActivityYearsText(currentPlayer.details);
+    ui.player2Years.textContent = getActivityYearsText(opponentPlayer.details);
     updateRevealUI();
   }
 }
@@ -301,9 +325,20 @@ function updateLanguage(language) {
   applyTranslations();
 }
 
+function updateActivityVisibility(isVisible) {
+  showActivity = Boolean(isVisible);
+  localStorage.setItem(ACTIVITY_VISIBILITY_STORAGE_KEY, String(showActivity));
+
+  if (currentPlayer && opponentPlayer) {
+    ui.player1Years.textContent = getActivityYearsText(currentPlayer.details);
+    ui.player2Years.textContent = getActivityYearsText(opponentPlayer.details);
+  }
+}
+
 async function initGame() {
   try {
     currentLanguage = resolveInitialLanguage();
+    showActivity = resolveInitialActivityVisibility();
     applyTranslations();
 
     const response = await fetch(DATA_FILE, { cache: 'no-store' });
@@ -371,6 +406,11 @@ function setupEventListeners() {
   if (ui.languageSelect) {
     ui.languageSelect.addEventListener('change', (event) => {
       updateLanguage(event.target.value);
+    });
+  }
+  if (ui.activityVisibilityToggle) {
+    ui.activityVisibilityToggle.addEventListener('change', (event) => {
+      updateActivityVisibility(event.target.checked);
     });
   }
 
@@ -512,10 +552,10 @@ function updateScoreboard() {
 function updateDuelCards() {
   ui.player1Name.textContent = currentPlayer.name;
   ui.player1Team.textContent = getLocalizedTeamName(currentPlayer.team);
-  ui.player1Years.textContent = computeActivityYearsLabel(currentPlayer.details);
+  ui.player1Years.textContent = getActivityYearsText(currentPlayer.details);
   ui.player2Name.textContent = opponentPlayer.name;
   ui.player2Team.textContent = getLocalizedTeamName(opponentPlayer.team);
-  ui.player2Years.textContent = computeActivityYearsLabel(opponentPlayer.details);
+  ui.player2Years.textContent = getActivityYearsText(opponentPlayer.details);
 
   // Update card backgrounds with team colors
   const card1 = document.querySelector('.card:first-of-type');
@@ -578,6 +618,13 @@ function computeActivityYearsLabel(detailsInput) {
   return minYear === maxYear
     ? t('activityLabel') + ': ' + minYear
     : t('activityLabel') + ': ' + minYear + ' - ' + maxYear;
+}
+
+function getActivityYearsText(detailsInput) {
+  if (!showActivity) {
+    return t('activityHidden');
+  }
+  return computeActivityYearsLabel(detailsInput);
 }
 
 function getTeamConfig(teamName) {

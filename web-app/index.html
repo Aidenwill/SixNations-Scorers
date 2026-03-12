@@ -38,6 +38,14 @@
     </section>
 
     <section id="game-play" class="panel hidden" aria-live="polite">
+      <div class="activity-toggle-row">
+        <span id="activity-toggle-label" class="activity-toggle-label">Show activity</span>
+        <label class="switch" for="activity-visibility-toggle" aria-label="Show activity">
+          <input id="activity-visibility-toggle" type="checkbox" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
       <div class="stats">
         <div class="stat"><span id="label-round">Round</span><strong id="round-number">0</strong></div>
         <div class="stat"><span id="label-streak">Streak</span><strong id="current-streak">0</strong></div>
