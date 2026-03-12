@@ -85,6 +85,21 @@ body {
   color: #3e4540;
 }
 
+.language-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.language-flag {
+  display: block;
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(9, 17, 31, 0.12);
+}
+
 .language-picker select {
   font: inherit;
   color: var(--ink);

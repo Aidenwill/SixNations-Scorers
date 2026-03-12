@@ -205,7 +205,8 @@ const ui = {
   finalStats: document.getElementById('final-stats'),
   detailBtn1: document.querySelector('.details[data-player="1"]'),
   detailBtn2: document.querySelector('.details[data-player="2"]'),
-  languageSelect: document.getElementById('language-select')
+  languageSelect: document.getElementById('language-select'),
+  currentLanguageFlag: document.getElementById('current-language-flag')
 };
 
 function resolveInitialLanguage() {
@@ -227,9 +228,25 @@ function t(key, replacements = {}) {
   return message;
 }
 
+function getLanguageFlagConfig(language) {
+  const flagConfig = {
+    fr: { src: 'assets/flags/fr.png', alt: 'Francais' },
+    en: { src: 'assets/flags/gb-eng.png', alt: 'English' },
+    it: { src: 'assets/flags/it.png', alt: 'Italiano' }
+  };
+
+  return flagConfig[language] || flagConfig.fr;
+}
+
 function applyTranslations() {
   document.documentElement.lang = currentLanguage;
   if (ui.languageSelect) ui.languageSelect.value = currentLanguage;
+  if (ui.currentLanguageFlag) {
+    const flag = getLanguageFlagConfig(currentLanguage);
+    ui.currentLanguageFlag.src = flag.src;
+    ui.currentLanguageFlag.alt = flag.alt;
+    ui.currentLanguageFlag.title = flag.alt;
+  }
 
   const byId = (id) => document.getElementById(id);
 
