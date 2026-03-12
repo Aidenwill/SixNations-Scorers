@@ -34,6 +34,12 @@ const I18N = {
     noScoringHistory: 'Aucun historique detaille disponible',
     close: 'Fermer',
     pointsWord: 'points',
+    teamEngland: 'Angleterre',
+    teamFrance: 'France',
+    teamWales: 'Pays de Galles',
+    teamScotland: 'Ecosse',
+    teamIreland: 'Irlande',
+    teamItaly: 'Italie',
     try: 'essai',
     tries: 'essais',
     penalty: 'penalite',
@@ -72,6 +78,12 @@ const I18N = {
     noScoringHistory: 'No detailed scoring history available',
     close: 'Close',
     pointsWord: 'points',
+    teamEngland: 'England',
+    teamFrance: 'France',
+    teamWales: 'Wales',
+    teamScotland: 'Scotland',
+    teamIreland: 'Ireland',
+    teamItaly: 'Italy',
     try: 'try',
     tries: 'tries',
     penalty: 'penalty',
@@ -110,6 +122,12 @@ const I18N = {
     noScoringHistory: 'Nessuno storico dettagliato disponibile',
     close: 'Chiudi',
     pointsWord: 'punti',
+    teamEngland: 'Inghilterra',
+    teamFrance: 'Francia',
+    teamWales: 'Galles',
+    teamScotland: 'Scozia',
+    teamIreland: 'Irlanda',
+    teamItaly: 'Italia',
     try: 'meta',
     tries: 'mete',
     penalty: 'calcio di punizione',
@@ -251,6 +269,8 @@ function applyTranslations() {
   if (gameOverTitle) gameOverTitle.textContent = t('gameOver');
 
   if (currentPlayer && opponentPlayer) {
+    ui.player1Team.textContent = getLocalizedTeamName(currentPlayer.team);
+    ui.player2Team.textContent = getLocalizedTeamName(opponentPlayer.team);
     ui.player1Years.textContent = computeActivityYearsLabel(currentPlayer.details);
     ui.player2Years.textContent = computeActivityYearsLabel(opponentPlayer.details);
     updateRevealUI();
@@ -302,6 +322,30 @@ function normalizePlayers(rawPlayers) {
       activityYearsLabel: computeActivityYearsLabel(p.details)
     }))
     .filter((p) => p.id && Number.isFinite(p.total));
+}
+
+function getTeamTranslationKey(teamName) {
+  const normalized = String(teamName || '').trim().toLowerCase();
+  const aliasMap = {
+    england: 'teamEngland',
+    france: 'teamFrance',
+    wales: 'teamWales',
+    scotland: 'teamScotland',
+    ireland: 'teamIreland',
+    italy: 'teamItaly'
+  };
+
+  if (aliasMap[normalized]) {
+    return aliasMap[normalized];
+  }
+
+  const matchedKey = Object.keys(aliasMap).find((key) => normalized.includes(key));
+  return matchedKey ? aliasMap[matchedKey] : null;
+}
+
+function getLocalizedTeamName(teamName) {
+  const translationKey = getTeamTranslationKey(teamName);
+  return translationKey ? t(translationKey) : String(teamName || t('unknown'));
 }
 
 function setupEventListeners() {
@@ -383,7 +427,7 @@ function evaluateChoice(choice) {
 
   ui.resultDetail.textContent = t('resultDetail', {
     name: winner.name,
-    team: winner.team,
+    team: getLocalizedTeamName(winner.team),
     total: winner.total
   });
   ui.resultSection.classList.remove('hidden');
@@ -406,11 +450,10 @@ function goToNextRound() {
 
   if (previousCurrentWon) {
     if (consecutiveRounds >= MAX_STAY) {
-      // Winner reached max stay, force replacement for both spots.
-      currentPlayer = getRandomDifferentPlayer(previousWinner);
+      // Winner reached max stay, switch anchor to the previous challenger so only one player changes.
+      currentPlayer = opponentPlayer;
       opponentPlayer = currentPlayer ? getRandomDifferentPlayer(currentPlayer) : null;
       consecutiveRounds = 1;
-      hasReturningPlayer = false;
     } else {
       // Current winner stays.
       currentPlayer = previousWinner;
@@ -451,10 +494,10 @@ function updateScoreboard() {
 
 function updateDuelCards() {
   ui.player1Name.textContent = currentPlayer.name;
-  ui.player1Team.textContent = currentPlayer.team;
+  ui.player1Team.textContent = getLocalizedTeamName(currentPlayer.team);
   ui.player1Years.textContent = computeActivityYearsLabel(currentPlayer.details);
   ui.player2Name.textContent = opponentPlayer.name;
-  ui.player2Team.textContent = opponentPlayer.team;
+  ui.player2Team.textContent = getLocalizedTeamName(opponentPlayer.team);
   ui.player2Years.textContent = computeActivityYearsLabel(opponentPlayer.details);
 
   // Update card backgrounds with team colors
@@ -626,7 +669,7 @@ function showPlayerDetails(playerNum) {
   let detailsHTML = `
     <div class="player-details-modal">
       <div class="modal-content">
-        <h3>${escapeHtml(t('playerDetailsTitle'))}: ${escapeHtml(player.name)} (${escapeHtml(player.team)})</h3>
+        <h3>${escapeHtml(t('playerDetailsTitle'))}: ${escapeHtml(player.name)} (${escapeHtml(getLocalizedTeamName(player.team))})</h3>
         <p><strong>${escapeHtml(t('totalPoints'))}:</strong> ${player.total}</p>
   `;
   

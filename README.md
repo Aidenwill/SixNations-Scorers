@@ -34,19 +34,25 @@ When you push to `main`, GitHub Actions deploys [web-app](web-app) to GitHub Pag
 
 ### Features
 
+#### Multilingual interface
+- Language selector in the header
+- Available languages: French, English, Italian
+- Interface texts and team names update instantly
+- Selected language is saved in localStorage
+
 #### Player Details
 - Details Button: click Details on any player card to see complete scoring history
 - Modal Display: shows tries, conversions, penalties, and drop goals with dates
 - Full Statistics: view total points and per-match breakdown
 
-#### Score Management
-- Local High Scores: top scores saved in browser localStorage
-- JSON Export: export high scores to a downloadable JSON file
-- Note: GitHub Pages is static, so server-side storage is not available
+#### Duel flow
+- One player returns to the next round and is matched with one new player
+- A player can remain for at most two rounds as the anchor before rotation forces a new anchor
 
 #### UX Design
 - Team Emblems: each player card displays team logo
 - Team Colors: cards use gradients based on team colors
+- Team Names: team labels are translated with the selected language
 - Accent Borders: colored borders matching each team
 - Subtle Rugby Pattern: geometric background pattern
 
@@ -77,11 +83,7 @@ python -m http.server 8080
 
 Then open http://localhost:8080
 
-### Server-side storage note
+### Notes
 
-GitHub Pages hosts static sites only. For true server-side score storage, you would need:
-- A backend API (Node.js, Python Flask, etc.)
-- A database (MongoDB, PostgreSQL, etc.)
-- A hosting service (Heroku, Railway, AWS, etc.)
-
-The current implementation uses localStorage plus JSON export as a practical workaround.
+- GitHub Pages hosting remains compatible because the web app is fully static.
+- The language preference is stored locally in the browser.

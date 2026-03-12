@@ -7,6 +7,7 @@ Interactive web application to guess which Six Nations player scored the most po
 ### Multilingual Interface
 - Language selector in the header (FR / EN / IT)
 - Interface texts update instantly without reloading
+- Team names are translated with the selected language
 - Selected language is saved in localStorage
 
 ### Player Details
@@ -14,10 +15,10 @@ Interactive web application to guess which Six Nations player scored the most po
 - **Modal Display**: Shows all tries, conversions, penalties, and drop goals with dates
 - **Full Statistics**: View total points and breakdown by match
 
-### Score Management
-- **Local High Scores**: Top 10 scores saved in browser localStorage
-- **JSON Export**: Export your high scores to a downloadable JSON file
-- **Note**: GitHub Pages is static, so server-side storage isn't available. The export feature allows you to save and share your scores manually.
+### Duel Rotation
+- One player is carried over to the next round
+- The returning player is matched against one newly selected player
+- To avoid the same anchor staying forever, the anchor rotates after two consecutive rounds
 
 ### UX Design
 - **Team Emblems**: Each player card displays their team's official logo
@@ -29,7 +30,6 @@ Interactive web application to guess which Six Nations player scored the most po
 - Card hover effect (elevation + shadow)
 - Slide-in animation for results
 - Smooth transitions on all buttons
-- Pulse effect on statistics
 
 ### Responsive
 - Adaptive layout for mobile/desktop
@@ -61,11 +61,7 @@ python -m http.server 8080
 
 Then open http://localhost:8080
 
-## Server-Side Storage Note
+## Notes
 
-GitHub Pages hosts static sites only. For true server-side score storage, you would need:
-- A backend API (Node.js, Python Flask, etc.)
-- A database (MongoDB, PostgreSQL, etc.)
-- Hosting service (Heroku, Railway, AWS, etc.)
-
-The current implementation uses localStorage + JSON export as a practical workaround.
+- The app is fully static and works on GitHub Pages.
+- The selected language is stored in localStorage.
