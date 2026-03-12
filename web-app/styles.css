@@ -70,6 +70,30 @@ body {
   padding: 14px 4px;
 }
 
+.hero-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.language-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #3e4540;
+}
+
+.language-picker select {
+  font: inherit;
+  color: var(--ink);
+  background: #f8f9f5;
+  border: 1px solid #bfc6b7;
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
 .eyebrow {
   font-size: 0.85rem;
   letter-spacing: 0.18em;
@@ -360,6 +384,11 @@ input {
 }
 
 @media (max-width: 760px) {
+  .hero-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .row {
     flex-direction: column;
   }

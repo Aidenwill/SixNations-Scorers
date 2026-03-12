@@ -4,6 +4,11 @@ Interactive web application to guess which Six Nations player scored the most po
 
 ## Features
 
+### Multilingual Interface
+- Language selector in the header (FR / EN / IT)
+- Interface texts update instantly without reloading
+- Selected language is saved in localStorage
+
 ### Player Details
 - **Details Button**: Click "Details" on any player card to see their complete scoring history
 - **Modal Display**: Shows all tries, conversions, penalties, and drop goals with dates

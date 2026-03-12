@@ -12,13 +12,23 @@
 
   <main class="app">
     <header class="hero">
-      <p class="eyebrow">Six Nations</p>
-      <h1>Scoring Duel</h1>
-      <p class="subtitle">Choose the player with the most scored points.</p>
+      <div class="hero-topbar">
+        <p class="eyebrow" id="eyebrow-text">Six Nations</p>
+        <label class="language-picker">
+          <span id="language-label">Language</span>
+          <select id="language-select" aria-label="Language">
+            <option value="fr">Francais</option>
+            <option value="en">English</option>
+            <option value="it">Italiano</option>
+          </select>
+        </label>
+      </div>
+      <h1 id="title-text">Scoring Duel</h1>
+      <p id="subtitle-text" class="subtitle">Choose the player with the most scored points.</p>
     </header>
 
     <section class="panel info-panel" aria-label="Data information">
-      <p>
+      <p id="info-text">
         Matches included: from 01-01-1971 to 09-03-2026.
         Before 1992, a try was worth 4 points.
       </p>
@@ -26,9 +36,9 @@
 
     <section id="game-play" class="panel hidden" aria-live="polite">
       <div class="stats">
-        <div class="stat"><span>Round</span><strong id="round-number">0</strong></div>
-        <div class="stat"><span>Streak</span><strong id="current-streak">0</strong></div>
-        <div class="stat"><span>Best Streak</span><strong id="best-streak">0</strong></div>
+        <div class="stat"><span id="label-round">Round</span><strong id="round-number">0</strong></div>
+        <div class="stat"><span id="label-streak">Streak</span><strong id="current-streak">0</strong></div>
+        <div class="stat"><span id="label-best-streak">Best Streak</span><strong id="best-streak">0</strong></div>
       </div>
 
       <div class="duel-grid">
@@ -39,7 +49,7 @@
           <p class="activity-years" id="player1-years"></p>
           <p class="player-score hidden" id="player1-score"></p>
           <button class="btn details hidden" data-player="1">Details</button>
-          <button class="btn choice" data-choice="1">Choose this player</button>
+          <button class="btn choice" data-choice="1" id="choose-player-1">Choose this player</button>
         </article>
 
         <div class="versus">VS</div>
@@ -51,7 +61,7 @@
           <p class="activity-years" id="player2-years"></p>
           <p class="player-score hidden" id="player2-score"></p>
           <button class="btn details hidden" data-player="2">Details</button>
-          <button class="btn choice" data-choice="2">Choose this player</button>
+          <button class="btn choice" data-choice="2" id="choose-player-2">Choose this player</button>
         </article>
       </div>
 
@@ -63,7 +73,7 @@
     </section>
 
     <section id="game-over" class="panel hidden">
-      <h2>Game Over</h2>
+      <h2 id="game-over-title">Game Over</h2>
       <div id="final-stats" class="final-stats"></div>
       <button id="play-again" class="btn primary">Play Again</button>
     </section>
