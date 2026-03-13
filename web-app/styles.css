@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Spectral:wght@500;600;700&display=swap");
+
 :root {
   --ink: #09111f;
   --paper: #f4f5f2;
@@ -19,7 +21,7 @@ body {
 }
 
 body {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Source Sans 3", Georgia, "Times New Roman", serif;
   color: var(--ink);
   background:
     radial-gradient(circle at 50% -8%, rgba(255, 250, 220, 0.28) 0%, rgba(255, 250, 220, 0.08) 22%, rgba(255, 250, 220, 0) 42%),
@@ -46,6 +48,17 @@ body {
   background-position: center center;
   position: relative;
   overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+.tab-btn,
+.daily-grid-col-header,
+.daily-grid-row-header,
+.stat strong {
+  font-family: "Spectral", Georgia, "Times New Roman", serif;
+  letter-spacing: 0.01em;
 }
 
 .bg-shape {
@@ -1301,13 +1314,33 @@ input {
 @media (max-width: 520px) {
   .daily-guess-header,
   .daily-guess-row {
-    grid-template-columns: minmax(72px, 1fr) repeat(5, 46px);
+    grid-template-columns: minmax(80px, 1fr) repeat(5, minmax(52px, 1fr));
     gap: 3px;
   }
 
-  .hint-label { display: none; }
+  .daily-guess-header {
+    font-size: 0.63rem;
+  }
 
-  .guess-hint { min-height: 38px; }
+  .hint-icon {
+    font-size: 0.92rem;
+  }
+
+  .hint-label {
+    display: block;
+    font-size: 0.58rem;
+    line-height: 1.05;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    max-width: 100%;
+  }
+
+  .guess-hint {
+    min-height: 44px;
+    padding: 5px 2px;
+    gap: 2px;
+  }
 
   .daily-grid-meta {
     flex-direction: column;
