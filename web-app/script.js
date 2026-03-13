@@ -175,6 +175,7 @@ async function initGame() {
         t,
         escapeHtml,
         getLocalizedTeamName,
+        getTeamConfig,
         normalizeScoreType,
         formatScoreType
       })
@@ -185,7 +186,16 @@ async function initGame() {
       allPlayers: state.allPlayers,
       t,
       escapeHtml,
-      getLocalizedTeamName
+      getLocalizedTeamName,
+      onOpenPlayerDetails: (player) => showPlayerDetailsModal({
+        player,
+        t,
+        escapeHtml,
+        getLocalizedTeamName,
+        getTeamConfig,
+        normalizeScoreType,
+        formatScoreType
+      })
     });
     dailyGridGameController.init();
 
@@ -480,6 +490,7 @@ function showPlayerDetails(playerNum) {
     t,
     escapeHtml,
     getLocalizedTeamName,
+    getTeamConfig,
     normalizeScoreType,
     formatScoreType
   });

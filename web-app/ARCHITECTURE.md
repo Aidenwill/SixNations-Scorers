@@ -5,7 +5,23 @@
 1. `script.js` loads `players.json` and normalizes player objects.
 2. Duel controllers are initialized (`filters`, `share`, duel state/UI).
 3. Daily controller is initialized (`daily-game.js`).
+4. Daily Grid controller is initialized (`daily-grid-game.js`).
 4. `applyTranslations()` propagates labels to all active controllers.
+
+## Daily Grid Mode State
+
+`js/daily-grid-game.js` keeps persisted concerns for the active date:
+- current day key (`sixnations_daily_grid_date`)
+- placed cells (`sixnations_daily_grid_placements`)
+- abandon flag (`sixnations_daily_grid_abandoned`)
+- revealed cells after abandon (`sixnations_daily_grid_revealed`)
+
+The controller computes:
+- deterministic grid definition via date hash + rule pool
+- per-cell candidate intersection checks
+- uniqueness feasibility (`hasUniqueAssignment`)
+- minimum 2 candidates per cell guard
+- share rendering from placed vs revealed cell maps
 
 ## Daily Mode State
 

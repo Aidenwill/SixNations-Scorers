@@ -106,6 +106,7 @@ export const I18N = {
     dailyGridShareBtn: 'Partager la grille',
     dailyGridShareSummary: 'Six Nations Grille du Jour - {date} - {count}/{max}\n{grid}',
     dailyGridRuleTeam: 'Joue pour {team}',
+    dailyGridRuleOpponentTeam: 'A marque contre {team}',
     dailyGridRuleStartBefore: 'Premiers points avant {year}',
     dailyGridRuleStartAfter: 'Premiers points en {year} ou apres',
     dailyGridRulePointsAtLeast: 'Au moins {value} points',
@@ -116,7 +117,12 @@ export const I18N = {
     dailyGridRuleTryAtLeast: 'Au moins {value} essai(s)',
     dailyGridRuleDropGoalAtLeast: 'Au moins {value} drop(s)',
     dailyGridRuleConversionAtLeast: 'Au moins {value} transformation(s)',
-    dailyGridRulePenaltyAtLeast: 'Au moins {value} penalite(s)'
+    dailyGridRulePenaltyAtLeast: 'Au moins {value} penalite(s)',
+    dailyGridRulePointsAgainstTeam: 'Au moins {value} pts contre {team}',
+    dailyGridRulePointsInYear: 'Au moins {value} pts en {year}',
+    dailyGridAbandonBtn: 'Abandonner',
+    dailyGridAbandoned: 'Grille abandonnee - voici des reponses possibles',
+    dailyGridShareSummaryAbandoned: 'Six Nations Grille du Jour - {date} - Abandonne {count}/{max}\n{grid}'
   },
   en: {
     languageLabel: 'Language',
@@ -223,6 +229,7 @@ export const I18N = {
     dailyGridShareBtn: 'Share grid',
     dailyGridShareSummary: 'Six Nations Daily Grid - {date} - {count}/{max}\n{grid}',
     dailyGridRuleTeam: 'Played for {team}',
+    dailyGridRuleOpponentTeam: 'Scored against {team}',
     dailyGridRuleStartBefore: 'First points before {year}',
     dailyGridRuleStartAfter: 'First points in {year} or later',
     dailyGridRulePointsAtLeast: 'At least {value} points',
@@ -233,7 +240,12 @@ export const I18N = {
     dailyGridRuleTryAtLeast: 'At least {value} try/tries',
     dailyGridRuleDropGoalAtLeast: 'At least {value} drop goal(s)',
     dailyGridRuleConversionAtLeast: 'At least {value} conversion(s)',
-    dailyGridRulePenaltyAtLeast: 'At least {value} penalty/penalties'
+    dailyGridRulePenaltyAtLeast: 'At least {value} penalty/penalties',
+    dailyGridRulePointsAgainstTeam: 'At least {value} pts against {team}',
+    dailyGridRulePointsInYear: 'At least {value} pts in {year}',
+    dailyGridAbandonBtn: 'Give up',
+    dailyGridAbandoned: 'Grid abandoned - here are possible answers',
+    dailyGridShareSummaryAbandoned: 'Six Nations Daily Grid - {date} - Abandoned {count}/{max}\n{grid}'
   },
   it: {
     languageLabel: 'Lingua',
@@ -340,6 +352,7 @@ export const I18N = {
     dailyGridShareBtn: 'Condividi griglia',
     dailyGridShareSummary: 'Six Nations Griglia del Giorno - {date} - {count}/{max}\n{grid}',
     dailyGridRuleTeam: 'Ha giocato per {team}',
+    dailyGridRuleOpponentTeam: 'Ha segnato contro {team}',
     dailyGridRuleStartBefore: 'Primi punti prima del {year}',
     dailyGridRuleStartAfter: 'Primi punti nel {year} o dopo',
     dailyGridRulePointsAtLeast: 'Almeno {value} punti',
@@ -349,7 +362,12 @@ export const I18N = {
     dailyGridRuleTryAtLeast: 'Almeno {value} meta/e',
     dailyGridRuleDropGoalAtLeast: 'Almeno {value} drop goal',
     dailyGridRuleConversionAtLeast: 'Almeno {value} trasformazione/i',
-    dailyGridRulePenaltyAtLeast: 'Almeno {value} calcio/i di punizione'
+    dailyGridRulePenaltyAtLeast: 'Almeno {value} calcio/i di punizione',
+    dailyGridRulePointsAgainstTeam: 'Almeno {value} punti contro {team}',
+    dailyGridRulePointsInYear: 'Almeno {value} punti nel {year}',
+    dailyGridAbandonBtn: 'Abbandona',
+    dailyGridAbandoned: 'Griglia abbandonata - ecco le risposte possibili',
+    dailyGridShareSummaryAbandoned: 'Six Nations Griglia del Giorno - {date} - Abbandonato {count}/{max}\n{grid}'
   },
   cy: {
     languageLabel: 'Iaith',
@@ -456,6 +474,7 @@ export const I18N = {
     dailyGridShareBtn: 'Rhannu\'r grid',
     dailyGridShareSummary: 'Six Nations Grid y Dydd - {date} - {count}/{max}\n{grid}',
     dailyGridRuleTeam: 'Wedi chwarae i {team}',
+    dailyGridRuleOpponentTeam: 'Wedi sgorio yn erbyn {team}',
     dailyGridRuleStartBefore: 'Pwyntiau cyntaf cyn {year}',
     dailyGridRuleStartAfter: 'Pwyntiau cyntaf yn {year} neu\'n hwyrach',
     dailyGridRulePointsAtLeast: 'O leiaf {value} pwynt',
@@ -465,7 +484,12 @@ export const I18N = {
     dailyGridRuleTryAtLeast: 'O leiaf {value} cais',
     dailyGridRuleDropGoalAtLeast: 'O leiaf {value} gol ostwng',
     dailyGridRuleConversionAtLeast: 'O leiaf {value} trosiad',
-    dailyGridRulePenaltyAtLeast: 'O leiaf {value} cosb'
+    dailyGridRulePenaltyAtLeast: 'O leiaf {value} cosb',
+    dailyGridRulePointsAgainstTeam: 'O leiaf {value} pwynt yn erbyn {team}',
+    dailyGridRulePointsInYear: 'O leiaf {value} pwynt yn {year}',
+    dailyGridAbandonBtn: 'Ildio',
+    dailyGridAbandoned: 'Grid wedi\'i ildio - dyma rai atebion posib',
+    dailyGridShareSummaryAbandoned: 'Six Nations Grid y Dydd - {date} - Ildiwyd {count}/{max}\n{grid}'
   },
   ga: {
     languageLabel: 'Teanga',
@@ -572,6 +596,7 @@ export const I18N = {
     dailyGridShareBtn: 'Roinn an ghreille',
     dailyGridShareSummary: 'Six Nations Greille an Lae - {date} - {count}/{max}\n{grid}',
     dailyGridRuleTeam: 'D\'imir do {team}',
+    dailyGridRuleOpponentTeam: 'Scorail in aghaidh {team}',
     dailyGridRuleStartBefore: 'Chead pointi roimh {year}',
     dailyGridRuleStartAfter: 'Chead pointi i {year} no ina dhiaidh',
     dailyGridRulePointsAtLeast: '{value} pointe ar a laghad',
@@ -581,7 +606,12 @@ export const I18N = {
     dailyGridRuleTryAtLeast: '{value} triail ar a laghad',
     dailyGridRuleDropGoalAtLeast: '{value} cic tite ar a laghad',
     dailyGridRuleConversionAtLeast: '{value} tiontu ar a laghad',
-    dailyGridRulePenaltyAtLeast: '{value} pionos ar a laghad'
+    dailyGridRulePenaltyAtLeast: '{value} pionos ar a laghad',
+    dailyGridRulePointsAgainstTeam: '{value}+ pointe in aghaidh {team}',
+    dailyGridRulePointsInYear: '{value}+ pointe i {year}',
+    dailyGridAbandonBtn: 'Geill',
+    dailyGridAbandoned: 'Greille treigthe - seo roinnt freagrai feidearthacha',
+    dailyGridShareSummaryAbandoned: 'Six Nations Greille an Lae - {date} - Treigthe {count}/{max}\n{grid}'
   },
   gd: {
     languageLabel: 'Canan',
@@ -688,6 +718,7 @@ export const I18N = {
     dailyGridShareBtn: 'Co-roinn griod',
     dailyGridShareSummary: 'Six Nations Griod an Latha - {date} - {count}/{max}\n{grid}',
     dailyGridRuleTeam: 'Chluich airson {team}',
+    dailyGridRuleOpponentTeam: 'Sgoraich an aghaidh {team}',
     dailyGridRuleStartBefore: 'A chiad phuingean ro {year}',
     dailyGridRuleStartAfter: 'A chiad phuingean ann an {year} no as deidh',
     dailyGridRulePointsAtLeast: 'Co-dhiu {value} puingean',
@@ -697,7 +728,12 @@ export const I18N = {
     dailyGridRuleTryAtLeast: 'Co-dhiu {value} try',
     dailyGridRuleDropGoalAtLeast: 'Co-dhiu {value} drop goal',
     dailyGridRuleConversionAtLeast: 'Co-dhiu {value} tionndadh',
-    dailyGridRulePenaltyAtLeast: 'Co-dhiu {value} peanas'
+    dailyGridRulePenaltyAtLeast: 'Co-dhiu {value} peanas',
+    dailyGridRulePointsAgainstTeam: 'Co-dhiu {value} puingean an aghaidh {team}',
+    dailyGridRulePointsInYear: 'Co-dhiu {value} puingean ann an {year}',
+    dailyGridAbandonBtn: 'Leig dheth',
+    dailyGridAbandoned: 'Griod air a threigsinn - seo freagairtean a dh\'fhaodadh a bhith ann',
+    dailyGridShareSummaryAbandoned: 'Six Nations Griod an Latha - {date} - Air a threigsinn {count}/{max}\n{grid}'
   }
 };
 

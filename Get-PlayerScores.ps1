@@ -70,6 +70,11 @@ function Get-PlayerScores {
 
         foreach ($team in $match.teams) {
             $abbr = $team.abbreviation
+            $opponent = $match.teams |
+                Where-Object { $_.abbreviation -ne $abbr } |
+                Select-Object -ExpandProperty abbreviation -First 1
+            if (-not $opponent) { $opponent = 'Unknown' }
+
             foreach ($type in $team.scoring.PSObject.Properties.Name) {
                 $points = $rules[$type]
                 foreach ($playerId in $team.scoring.$type) {
@@ -84,9 +89,11 @@ function Get-PlayerScores {
                     }
                     $result[$playerId].Total += $points
                     $result[$playerId].Details += [pscustomobject]@{
-                        Date   = $match.date
-                        Type   = $type
-                        Points = $points
+                        Date     = $match.date
+                        MatchId  = $match.matchId
+                        Opponent = $opponent
+                        Type     = $type
+                        Points   = $points
                     }
                 }
             }

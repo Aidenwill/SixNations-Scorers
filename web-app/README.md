@@ -1,8 +1,9 @@
 # Six Nations Scoring Duel - Web App
 
-Static web app with two game modes:
+Static web app with three game modes:
 - Duel mode (pick the highest scorer)
 - Daily mode (Player of the Day puzzle)
+- Daily Grid mode (3x3 constraints)
 
 ## Quick Start
 
@@ -45,6 +46,18 @@ Open `http://localhost:8080`.
 - Each cell must match both constraints (row + column)
 - Search/autocomplete to place a player in selected cell
 - One player can only be used once in the grid
+- Clicking a filled/revealed cell opens the player details modal
+- Can abandon a grid: empty cells are auto-filled with valid candidates in red
+- Abandon auto-fill picks random valid candidates (not always the same players)
+- Share supports mixed results:
+	- 🟩 player placed by user
+	- 🟥 valid answer revealed after abandon
+	- ⬜ still empty (if any)
+- Rule pool includes opponent and scoring constraints:
+	- scored against a given team
+	- at least X points against a given team
+	- at least X points in a given year
+- Grid generation guarantees at least 2 candidates per cell
 - Daily persistence in localStorage
 
 ### Internationalization

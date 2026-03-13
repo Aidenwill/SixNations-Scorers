@@ -1,8 +1,11 @@
 import { getCanonicalTeamName } from './teams.js';
 
 const GRID_SIZE = 3;
+const MIN_CANDIDATES_PER_CELL = 2;
 const DAILY_GRID_DATE_KEY = 'sixnations_daily_grid_date';
 const DAILY_GRID_PLACEMENTS_KEY = 'sixnations_daily_grid_placements';
+const DAILY_GRID_ABANDONED_KEY = 'sixnations_daily_grid_abandoned';
+const DAILY_GRID_REVEALED_KEY = 'sixnations_daily_grid_revealed';
 
 function safeParseJson(value, fallback) {
   try {
@@ -60,6 +63,42 @@ function getScoreTypeCount(player, scoreType) {
   }, 0);
 }
 
+function hasScoredAgainstTeam(player, teamName) {
+  const canonicalOpponent = getCanonicalTeamName(teamName) || String(teamName || '');
+  if (!canonicalOpponent) return false;
+
+  const details = Array.isArray(player?.details) ? player.details : [];
+  return details.some((entry) => {
+    const rawOpponent = entry?.opponent ?? entry?.Opponent;
+    const normalized = getCanonicalTeamName(rawOpponent) || String(rawOpponent || '');
+    return normalized === canonicalOpponent;
+  });
+}
+
+function getPointsAgainstTeam(player, teamName) {
+  const canonicalOpponent = getCanonicalTeamName(teamName) || String(teamName || '');
+  if (!canonicalOpponent) return 0;
+  const details = Array.isArray(player?.details) ? player.details : [];
+  return details.reduce((sum, entry) => {
+    const rawOpponent = entry?.opponent ?? entry?.Opponent;
+    const normalized = getCanonicalTeamName(rawOpponent) || String(rawOpponent || '');
+    if (normalized !== canonicalOpponent) return sum;
+    const pts = Number(entry?.points ?? entry?.Points ?? 0);
+    return sum + (Number.isFinite(pts) && pts > 0 ? pts : 0);
+  }, 0);
+}
+
+function getPointsInYear(player, year) {
+  const yearStr = String(year);
+  const details = Array.isArray(player?.details) ? player.details : [];
+  return details.reduce((sum, entry) => {
+    const date = String(entry?.date ?? entry?.Date ?? '');
+    if (!date.startsWith(yearStr)) return sum;
+    const pts = Number(entry?.points ?? entry?.Points ?? 0);
+    return sum + (Number.isFinite(pts) && pts > 0 ? pts : 0);
+  }, 0);
+}
+
 function getRuleThresholdCount(players, testFn) {
   const n = players.filter(testFn).length;
   return n >= 5 && n <= players.length - 3;
@@ -73,6 +112,9 @@ export function evaluateRule(player, rule) {
   if (rule.kind === 'team') {
     const team = getCanonicalTeamName(player.team) || String(player.team || '');
     return team === rule.team;
+  }
+  if (rule.kind === 'opponent') {
+    return hasScoredAgainstTeam(player, rule.team);
   }
   if (rule.kind === 'startBefore') {
     return Number.isFinite(start) && start < rule.year;
@@ -94,6 +136,12 @@ export function evaluateRule(player, rule) {
   }
   if (rule.kind === 'scoreTypeAtLeast') {
     return getScoreTypeCount(player, rule.scoreType) >= rule.value;
+  }
+  if (rule.kind === 'pointsAgainstTeam') {
+    return getPointsAgainstTeam(player, rule.team) >= rule.value;
+  }
+  if (rule.kind === 'pointsInYear') {
+    return getPointsInYear(player, rule.year) >= rule.value;
   }
   return false;
 }
@@ -122,7 +170,29 @@ function buildRuleCandidates(players) {
       { id: `team:${team}`, kind: 'team', team },
       (p) => evaluateRule(p, { kind: 'team', team })
     );
+
+    pushRule(
+      { id: `opponent:${team}`, kind: 'opponent', team },
+      (p) => evaluateRule(p, { kind: 'opponent', team })
+    );
+
+    [10, 20].forEach((value) => {
+      pushRule(
+        { id: `pointsAgainstTeam:${team}:${value}`, kind: 'pointsAgainstTeam', team, value },
+        (p) => evaluateRule(p, { kind: 'pointsAgainstTeam', team, value })
+      );
+    });
   });
+
+  const currentYear = new Date().getFullYear();
+  for (let year = 2000; year < currentYear; year++) {
+    [10, 15].forEach((value) => {
+      pushRule(
+        { id: `pointsInYear:${year}:${value}`, kind: 'pointsInYear', year, value },
+        (p) => evaluateRule(p, { kind: 'pointsInYear', year, value })
+      );
+    });
+  }
 
   [1985, 1990, 1995, 2000].forEach((year) => {
     pushRule(
@@ -223,7 +293,7 @@ export function generateDailyGridDefinition(players, dateStr) {
     if (rows.length < GRID_SIZE || cols.length < GRID_SIZE) continue;
 
     const candidatesByCell = [];
-    let hasEmptyCell = false;
+    let hasInvalidCell = false;
 
     for (let r = 0; r < GRID_SIZE; r++) {
       for (let c = 0; c < GRID_SIZE; c++) {
@@ -234,15 +304,15 @@ export function generateDailyGridDefinition(players, dateStr) {
           .map((p) => p.id);
 
         candidatesByCell.push(ids);
-        if (ids.length === 0) {
-          hasEmptyCell = true;
+        if (ids.length < MIN_CANDIDATES_PER_CELL) {
+          hasInvalidCell = true;
           break;
         }
       }
-      if (hasEmptyCell) break;
+      if (hasInvalidCell) break;
     }
 
-    if (hasEmptyCell) continue;
+    if (hasInvalidCell) continue;
     if (!hasUniqueAssignment(candidatesByCell)) continue;
 
     return { rows, cols };
@@ -259,6 +329,9 @@ export function buildRuleLabel(rule, t, getLocalizedTeamName) {
   if (rule.kind === 'team') {
     return t('dailyGridRuleTeam', { team: getLocalizedTeamName(rule.team, t) });
   }
+  if (rule.kind === 'opponent') {
+    return t('dailyGridRuleOpponentTeam', { team: getLocalizedTeamName(rule.team, t) });
+  }
   if (rule.kind === 'startBefore') return t('dailyGridRuleStartBefore', { year: rule.year });
   if (rule.kind === 'startAfter') return t('dailyGridRuleStartAfter', { year: rule.year });
   if (rule.kind === 'pointsAtLeast') return t('dailyGridRulePointsAtLeast', { value: rule.value });
@@ -271,14 +344,28 @@ export function buildRuleLabel(rule, t, getLocalizedTeamName) {
     if (rule.scoreType === 'conversion') return t('dailyGridRuleConversionAtLeast', { value: rule.value });
     if (rule.scoreType === 'penalty') return t('dailyGridRulePenaltyAtLeast', { value: rule.value });
   }
+  if (rule.kind === 'pointsAgainstTeam') {
+    return t('dailyGridRulePointsAgainstTeam', { value: rule.value, team: getLocalizedTeamName(rule.team, t) });
+  }
+  if (rule.kind === 'pointsInYear') {
+    return t('dailyGridRulePointsInYear', { value: rule.value, year: rule.year });
+  }
   return rule.id;
 }
 
-export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLocalizedTeamName }) {
+export function createDailyGridGameController({
+  allPlayers,
+  t,
+  escapeHtml,
+  getLocalizedTeamName,
+  onOpenPlayerDetails = null
+}) {
   let todayStr = '';
   let definition = null;
   let selectedCell = null;
   let placements = {};
+  let revealedPlacements = {};
+  let abandoned = false;
   let suggestions = [];
   let activeSuggestionIndex = -1;
   let shareTimeout = null;
@@ -297,7 +384,8 @@ export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLo
       searchInput: document.getElementById('daily-grid-search-input'),
       suggestionList: document.getElementById('daily-grid-suggestions'),
       resetBtn: document.getElementById('daily-grid-reset'),
-      shareBtn: document.getElementById('daily-grid-share')
+      shareBtn: document.getElementById('daily-grid-share'),
+      abandonBtn: document.getElementById('daily-grid-abandon')
     };
 
     todayStr = getTodayDateString();
@@ -332,22 +420,52 @@ export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLo
     });
 
     placements = nextPlacements;
+
+    abandoned = localStorage.getItem(DAILY_GRID_ABANDONED_KEY) === 'true';
+    if (abandoned) {
+      const rawRevealed = safeParseJson(localStorage.getItem(DAILY_GRID_REVEALED_KEY) || '{}', {});
+      const validatedRevealed = {};
+      Object.entries(rawRevealed).forEach(([cellKey, playerId]) => {
+        const [r, c] = String(cellKey).split('-').map(Number);
+        if (!Number.isInteger(r) || !Number.isInteger(c) || r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) return;
+        if (placements[cellKey]) return;
+        const player = allPlayers.find((p) => p.id === String(playerId));
+        if (!player) return;
+        validatedRevealed[cellKey] = player.id;
+      });
+      revealedPlacements = validatedRevealed;
+    }
   }
 
   function resetForNewDay() {
     localStorage.setItem(DAILY_GRID_DATE_KEY, todayStr);
     localStorage.removeItem(DAILY_GRID_PLACEMENTS_KEY);
+    localStorage.removeItem(DAILY_GRID_ABANDONED_KEY);
+    localStorage.removeItem(DAILY_GRID_REVEALED_KEY);
     placements = {};
+    revealedPlacements = {};
+    abandoned = false;
     selectedCell = null;
   }
 
   function saveState() {
     localStorage.setItem(DAILY_GRID_DATE_KEY, todayStr);
     localStorage.setItem(DAILY_GRID_PLACEMENTS_KEY, JSON.stringify(placements));
+    localStorage.setItem(DAILY_GRID_ABANDONED_KEY, String(abandoned));
+    if (abandoned) localStorage.setItem(DAILY_GRID_REVEALED_KEY, JSON.stringify(revealedPlacements));
+    else localStorage.removeItem(DAILY_GRID_REVEALED_KEY);
   }
 
   function countPlacedCells() {
     return Object.keys(placements).length;
+  }
+
+  function countRevealedCells() {
+    return Object.keys(revealedPlacements).length;
+  }
+
+  function hasAnyVisibleCell() {
+    return countPlacedCells() + countRevealedCells() > 0;
   }
 
   function isCompleted() {
@@ -368,11 +486,47 @@ export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLo
     return allPlayers.find((p) => p.id === playerId) || null;
   }
 
+  function pickRandomRevealedPlayerForCell(r, c) {
+    const rowRule = definition.rows[r];
+    const colRule = definition.cols[c];
+    const usedIds = new Set([
+      ...Object.values(placements),
+      ...Object.values(revealedPlacements)
+    ]);
+
+    const candidates = allPlayers.filter(
+      (p) => !usedIds.has(p.id) && evaluateRule(p, rowRule) && evaluateRule(p, colRule)
+    );
+    if (candidates.length === 0) return null;
+    const idx = Math.floor(Math.random() * candidates.length);
+    return candidates[idx] || null;
+  }
+
+  function doAbandon() {
+    if (abandoned || isCompleted()) return;
+    abandoned = true;
+    revealedPlacements = {};
+    for (let r = 0; r < GRID_SIZE; r++) {
+      for (let c = 0; c < GRID_SIZE; c++) {
+        const key = getCellKey(r, c);
+        if (!placements[key]) {
+          const player = pickRandomRevealedPlayerForCell(r, c);
+          if (player) revealedPlacements[key] = player.id;
+        }
+      }
+    }
+    selectedCell = null;
+    saveState();
+    setMessage('dailyGridAbandoned', {}, 'info');
+    render();
+  }
+
   function isPlayerAlreadyUsed(playerId, excludedCellKey = null) {
     return Object.entries(placements).some(([cellKey, id]) => cellKey !== excludedCellKey && id === playerId);
   }
 
   function setSelectedCellByKey(cellKey) {
+    if (abandoned) return;
     selectedCell = cellKey;
     renderSelectedRule();
     renderBoard();
@@ -390,14 +544,16 @@ export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLo
         const cells = Array.from({ length: GRID_SIZE }, (_, c) => {
           const key = getCellKey(r, c);
           const player = getPlayerById(placements[key]);
-          const isSelected = selectedCell === key;
+          const revealedPlayer = !player ? getPlayerById(revealedPlacements[key]) : null;
+          const isSelected = !abandoned && selectedCell === key;
           const classes = [
             'daily-grid-cell',
-            player ? 'filled' : 'empty',
+            player ? 'filled' : (revealedPlayer ? 'revealed' : 'empty'),
             isSelected ? 'selected' : ''
           ].filter(Boolean).join(' ');
-          const value = player ? escapeHtml(player.name) : escapeHtml(t('dailyGridCellEmpty'));
-          const team = player ? ` <span class="daily-grid-cell-team">${escapeHtml(getLocalizedTeamName(player.team, t))}</span>` : '';
+          const displayPlayer = player || revealedPlayer;
+          const value = displayPlayer ? escapeHtml(displayPlayer.name) : escapeHtml(t('dailyGridCellEmpty'));
+          const team = displayPlayer ? ` <span class="daily-grid-cell-team">${escapeHtml(getLocalizedTeamName(displayPlayer.team, t))}</span>` : '';
           return `<button type="button" class="${classes}" data-row="${r}" data-col="${c}">${value}${team}</button>`;
         }).join('');
 
@@ -475,9 +631,10 @@ export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLo
 
   function renderSearchState() {
     if (!el.searchInput) return;
-    el.searchInput.disabled = isCompleted() || !selectedCell;
+    el.searchInput.disabled = isCompleted() || abandoned || !selectedCell;
     el.searchInput.placeholder = t('dailyGridSearchPlaceholder');
-    if (el.shareBtn) el.shareBtn.disabled = countPlacedCells() === 0;
+    if (el.abandonBtn) el.abandonBtn.disabled = abandoned || isCompleted();
+    if (el.shareBtn) el.shareBtn.disabled = !hasAnyVisibleCell();
   }
 
   function renderStaticLabels() {
@@ -486,6 +643,7 @@ export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLo
     if (el.instructions) el.instructions.textContent = t('dailyGridInstructions');
     if (el.resetBtn) el.resetBtn.textContent = t('dailyGridReset');
     if (el.shareBtn) el.shareBtn.textContent = t('dailyGridShareBtn');
+    if (el.abandonBtn) el.abandonBtn.textContent = t('dailyGridAbandonBtn');
   }
 
   function buildShareGrid() {
@@ -493,7 +651,10 @@ export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLo
     for (let r = 0; r < GRID_SIZE; r++) {
       const line = [];
       for (let c = 0; c < GRID_SIZE; c++) {
-        line.push(placements[getCellKey(r, c)] ? '🟩' : '⬜');
+        const key = getCellKey(r, c);
+        if (placements[key]) line.push('\u{1F7E9}');
+        else if (revealedPlacements[key]) line.push('\u{1F7E5}');
+        else line.push('\u2B1C');
       }
       lines.push(line.join(''));
     }
@@ -501,9 +662,10 @@ export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLo
   }
 
   async function doShare() {
-    if (countPlacedCells() === 0) return;
+    if (!hasAnyVisibleCell()) return;
 
-    const text = t('dailyGridShareSummary', {
+    const summaryKey = abandoned ? 'dailyGridShareSummaryAbandoned' : 'dailyGridShareSummary';
+    const text = t(summaryKey, {
       date: todayStr,
       count: countPlacedCells(),
       max: GRID_SIZE * GRID_SIZE,
@@ -533,6 +695,8 @@ export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLo
 
     if (isCompleted()) {
       setMessage('dailyGridCompleted', {}, 'success');
+    } else if (abandoned) {
+      setMessage('dailyGridAbandoned', {}, 'info');
     } else if (!el.message?.textContent) {
       setMessage('dailyGridReady', {}, 'info');
     }
@@ -556,7 +720,7 @@ export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLo
   }
 
   function tryPlacePlayer(player) {
-    if (!selectedCell || !player || isCompleted()) return;
+    if (!selectedCell || !player || isCompleted() || abandoned) return;
 
     const [r, c] = selectedCell.split('-').map(Number);
     const rowRule = definition.rows[r];
@@ -590,7 +754,18 @@ export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLo
         const r = Number(button.dataset.row);
         const c = Number(button.dataset.col);
         if (Number.isNaN(r) || Number.isNaN(c)) return;
-        setSelectedCellByKey(getCellKey(r, c));
+
+        const key = getCellKey(r, c);
+        const playedPlayer = getPlayerById(placements[key]);
+        const revealedPlayer = !playedPlayer ? getPlayerById(revealedPlacements[key]) : null;
+        const playerToShow = playedPlayer || revealedPlayer;
+
+        if (playerToShow && typeof onOpenPlayerDetails === 'function') {
+          onOpenPlayerDetails(playerToShow);
+          return;
+        }
+
+        setSelectedCellByKey(key);
         if (el.searchInput) el.searchInput.focus();
       });
     }
@@ -635,12 +810,18 @@ export function createDailyGridGameController({ allPlayers, t, escapeHtml, getLo
     if (el.resetBtn) {
       el.resetBtn.addEventListener('click', () => {
         placements = {};
+        revealedPlacements = {};
+        abandoned = false;
         selectedCell = findFirstEmptyCell();
         saveState();
         clearSearch();
         setMessage('dailyGridReady', {}, 'info');
         render();
       });
+    }
+
+    if (el.abandonBtn) {
+      el.abandonBtn.addEventListener('click', doAbandon);
     }
 
     if (el.shareBtn) {

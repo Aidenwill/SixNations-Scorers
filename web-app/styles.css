@@ -756,6 +756,22 @@ input {
   font-size: 0.9em;
 }
 
+.details-opponent-flags {
+  margin-left: 6px;
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  gap: 4px;
+  vertical-align: middle;
+}
+
+.details-opponent-flag {
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  object-fit: cover;
+  box-shadow: 0 0 0 1px rgba(9, 17, 31, 0.14);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -1166,6 +1182,12 @@ input {
   border-color: #9fc8bc;
 }
 
+.daily-grid-cell.revealed {
+  color: #5c1a1a;
+  background: #fdecea;
+  border-color: #e5a5a0;
+}
+
 .daily-grid-cell.selected {
   outline: 2px solid #1f6a5f;
   outline-offset: 1px;
@@ -1186,6 +1208,21 @@ input {
 .daily-grid-search-area .btn {
   margin-top: 0;
   white-space: nowrap;
+}
+
+.btn.danger {
+  background: #c0392b;
+  color: #ffffff;
+  border-color: #a93226;
+}
+
+.btn.danger:hover {
+  background: #a93226;
+}
+
+.btn.danger:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .daily-grid-search-wrapper {

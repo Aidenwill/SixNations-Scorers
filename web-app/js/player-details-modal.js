@@ -4,6 +4,7 @@ export function showPlayerDetailsModal(options) {
     t,
     escapeHtml,
     getLocalizedTeamName,
+    getTeamConfig,
     normalizeScoreType,
     formatScoreType
   } = options;
@@ -23,10 +24,12 @@ export function showPlayerDetailsModal(options) {
       const date = d.date || d.Date || 'N/A';
       const points = Number(d.points || d.Points || 0);
       const type = normalizeScoreType(d.type || d.Type || 'Unknown');
-      if (!byDate.has(date)) byDate.set(date, { total: 0, types: new Map() });
+      const opponent = d.opponent || d.Opponent || null;
+      if (!byDate.has(date)) byDate.set(date, { total: 0, types: new Map(), opponents: new Set() });
       const entry = byDate.get(date);
       entry.total += points;
       entry.types.set(type, (entry.types.get(type) || 0) + 1);
+      if (opponent) entry.opponents.add(String(opponent));
     });
 
     detailsHTML += '<h4>' + escapeHtml(t('scoringHistory')) + ':</h4><ul>';
@@ -34,7 +37,20 @@ export function showPlayerDetailsModal(options) {
       const typeSummary = Array.from(entry.types.entries())
         .map(([type, count]) => formatScoreType(type, count, t))
         .join(', ');
-      detailsHTML += `<li>${escapeHtml(date)}: ${entry.total} ${escapeHtml(t('pointsWord'))} (${escapeHtml(typeSummary)})</li>`;
+
+      const opponentFlagImages = Array.from(entry.opponents)
+        .map((teamName) => {
+          if (!getTeamConfig) return null;
+          const cfg = getTeamConfig(teamName);
+          if (!cfg?.logo) return null;
+          const localizedName = getLocalizedTeamName(teamName, t);
+          return `<img class="details-opponent-flag" src="${escapeHtml(cfg.logo)}" alt="${escapeHtml(localizedName)}" title="${escapeHtml(localizedName)}" loading="lazy" decoding="async" />`;
+        })
+        .filter(Boolean)
+        .join('');
+      const flagsBlock = opponentFlagImages ? ` <span class="details-opponent-flags" title="${escapeHtml(Array.from(entry.opponents).join(', '))}">${opponentFlagImages}</span> ` : '';
+
+      detailsHTML += `<li>${escapeHtml(date)}${flagsBlock}  ${entry.total} ${escapeHtml(t('pointsWord'))} (${escapeHtml(typeSummary)})</li>`;
     });
     detailsHTML += '</ul>';
   } else {
