@@ -40,6 +40,13 @@ Open `http://localhost:8080`.
 	- Number of hints used
 	- Details button for target player scoring history
 
+### Daily Grid Mode (Grille du Jour)
+- New 3x3 daily puzzle with row and column constraints
+- Each cell must match both constraints (row + column)
+- Search/autocomplete to place a player in selected cell
+- One player can only be used once in the grid
+- Daily persistence in localStorage
+
 ### Internationalization
 - Supported languages: `fr`, `en`, `it`, `cy`, `ga`, `gd`
 - Dynamic UI translation without reload
@@ -57,6 +64,7 @@ web-app/
 	js/
 		constants.js
 		daily-game.js
+		daily-grid-game.js
 		daily-hints.js
 		filters.js
 		game-engine.js
@@ -79,6 +87,7 @@ web-app/
 
 - `script.js`: bootstrap + wiring between modules
 - `js/daily-game.js`: daily puzzle state machine, hints, rendering, persistence
+- `js/daily-grid-game.js`: 3x3 constraint grid generator, validation, and controller
 - `js/daily-hints.js`: pure hint-offer selection/sanitization helpers
 - `js/game-engine.js`: pure duel transition logic
 - `js/game-utils.js`: scoring/date/escaping utilities

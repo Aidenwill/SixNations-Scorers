@@ -44,8 +44,10 @@ export function applyStaticLabels(ui, language, showActivity, t) {
 
   const tabDuel  = document.getElementById('tab-btn-duel');
   const tabDaily = document.getElementById('tab-btn-daily');
+  const tabDailyGrid = document.getElementById('tab-btn-daily-grid');
   if (tabDuel)  tabDuel.textContent  = t('duelTabLabel');
   if (tabDaily) tabDaily.textContent = t('dailyTabLabel');
+  if (tabDailyGrid) tabDailyGrid.textContent = t('dailyGridTabLabel');
 }
 
 export function createUIBindings(doc = document) {

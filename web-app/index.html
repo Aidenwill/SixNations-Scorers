@@ -46,6 +46,8 @@
               aria-selected="true" aria-controls="panel-duel">Duel</button>
       <button class="tab-btn" id="tab-btn-daily" role="tab" data-tab="daily"
               aria-selected="false" aria-controls="panel-daily">Joueur du Jour</button>
+          <button class="tab-btn" id="tab-btn-daily-grid" role="tab" data-tab="daily-grid"
+            aria-selected="false" aria-controls="panel-daily-grid">Grille du Jour</button>
     </nav>
 
     <div id="panel-duel" role="tabpanel" aria-labelledby="tab-btn-duel">
@@ -178,6 +180,43 @@
         </div>
       </section>
     </div><!-- /#panel-daily -->
+
+    <div id="panel-daily-grid" class="hidden" role="tabpanel" aria-labelledby="tab-btn-daily-grid">
+      <section class="panel daily-grid-section">
+        <div class="daily-grid-header">
+          <h2 id="daily-grid-title">Grille du Jour</h2>
+          <p id="daily-grid-subtitle" class="daily-grid-subtitle">Remplis la grille avec un joueur valide par case.</p>
+          <p id="daily-grid-instructions" class="daily-grid-instructions">Chaque case doit respecter la contrainte de sa ligne et de sa colonne.</p>
+        </div>
+
+        <div class="daily-grid-meta">
+          <p id="daily-grid-progress" class="daily-grid-progress"></p>
+          <p id="daily-grid-selected-rule" class="daily-grid-selected-rule"></p>
+        </div>
+
+        <div id="daily-grid-board" class="daily-grid-board" aria-live="polite"></div>
+
+        <div class="daily-grid-search-area">
+          <div class="daily-grid-search-wrapper">
+            <input type="text"
+                   id="daily-grid-search-input"
+                   class="daily-grid-search-input"
+                   autocomplete="off"
+                   spellcheck="false"
+                   placeholder="Trouver un joueur"
+                   aria-label="Trouver un joueur"
+                   aria-autocomplete="list"
+                   aria-controls="daily-grid-suggestions"
+                   aria-haspopup="listbox" />
+            <ul id="daily-grid-suggestions" class="daily-grid-suggestions" role="listbox" hidden></ul>
+          </div>
+          <button id="daily-grid-share" type="button" class="btn primary">Partager</button>
+          <button id="daily-grid-reset" type="button" class="btn secondary">Reinitialiser</button>
+        </div>
+
+        <p id="daily-grid-message" class="daily-grid-message is-info"></p>
+      </section>
+    </div><!-- /#panel-daily-grid -->
 
   </main>
 

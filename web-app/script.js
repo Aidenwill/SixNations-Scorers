@@ -35,11 +35,13 @@ import {
   getDuelCards
 } from './js/ui.js';
 import { createDailyGameController } from './js/daily-game.js';
+import { createDailyGridGameController } from './js/daily-grid-game.js';
 
 const state = createGameState();
 let filtersController = null;
 let shareController = null;
 let dailyGameController = null;
+let dailyGridGameController = null;
 
 const ui = createUIBindings();
 
@@ -74,6 +76,10 @@ function applyTranslations() {
 
   if (dailyGameController) {
     dailyGameController.updateTranslations();
+  }
+
+  if (dailyGridGameController) {
+    dailyGridGameController.updateTranslations();
   }
 
   if (state.currentPlayer && state.opponentPlayer) {
@@ -174,6 +180,14 @@ async function initGame() {
       })
     });
     dailyGameController.init();
+
+    dailyGridGameController = createDailyGridGameController({
+      allPlayers: state.allPlayers,
+      t,
+      escapeHtml,
+      getLocalizedTeamName
+    });
+    dailyGridGameController.init();
 
     setupTabSwitching();
     startGame();
@@ -433,6 +447,7 @@ function setupTabSwitching() {
   const tabBtns = document.querySelectorAll('.tab-btn');
   const panelDuel  = document.getElementById('panel-duel');
   const panelDaily = document.getElementById('panel-daily');
+  const panelDailyGrid = document.getElementById('panel-daily-grid');
 
   tabBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -444,14 +459,17 @@ function setupTabSwitching() {
       });
       if (panelDuel)  panelDuel.classList.toggle('hidden',  tab !== 'duel');
       if (panelDaily) panelDaily.classList.toggle('hidden', tab !== 'daily');
+      if (panelDailyGrid) panelDailyGrid.classList.toggle('hidden', tab !== 'daily-grid');
     });
   });
 
   // Update tab labels with current language on first render
   const duelBtn  = document.getElementById('tab-btn-duel');
   const dailyBtn = document.getElementById('tab-btn-daily');
+  const dailyGridBtn = document.getElementById('tab-btn-daily-grid');
   if (duelBtn)  duelBtn.textContent  = t('duelTabLabel');
   if (dailyBtn) dailyBtn.textContent = t('dailyTabLabel');
+  if (dailyGridBtn) dailyGridBtn.textContent = t('dailyGridTabLabel');
 }
 
 // Show player scoring details
