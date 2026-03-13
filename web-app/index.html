@@ -41,7 +41,49 @@
       </p>
     </section>
 
+    <nav class="tab-nav" role="tablist" aria-label="Game mode">
+      <button class="tab-btn active" id="tab-btn-duel" role="tab" data-tab="duel"
+              aria-selected="true" aria-controls="panel-duel">Duel</button>
+      <button class="tab-btn" id="tab-btn-daily" role="tab" data-tab="daily"
+              aria-selected="false" aria-controls="panel-daily">Joueur du Jour</button>
+    </nav>
+
+    <div id="panel-duel" role="tabpanel" aria-labelledby="tab-btn-duel">
     <section id="game-play" class="panel hidden" aria-live="polite">
+      <button id="filters-toggle" class="btn filters-toggle-btn" type="button" aria-controls="filters-panel" aria-expanded="false">Filters</button>
+
+      <section id="filters-panel" class="filters-panel collapsed" aria-label="Game filters">
+        <div class="filters-header">
+          <h3 id="filters-title">Filters</h3>
+          <p id="filters-summary" class="filters-summary"></p>
+        </div>
+
+        <div class="year-filters">
+          <p id="filter-years-label" class="filter-label">Years</p>
+          <div class="year-slider-group">
+            <label for="year-start" id="filter-year-start-label">From</label>
+            <input id="year-start" type="range" min="1971" max="2026" value="1971" step="1">
+            <strong id="year-start-value">1971</strong>
+          </div>
+          <div class="year-slider-group">
+            <label for="year-end" id="filter-year-end-label">To</label>
+            <input id="year-end" type="range" min="1971" max="2026" value="2026" step="1">
+            <strong id="year-end-value">2026</strong>
+          </div>
+        </div>
+
+        <div class="team-filters">
+          <div class="team-filters-head">
+            <p id="filter-teams-label" class="filter-label">Teams</p>
+            <div class="team-filter-actions">
+              <button id="teams-all" type="button" class="btn team-filter-btn">All</button>
+              <button id="filters-reset" type="button" class="btn team-filter-btn">Reset</button>
+            </div>
+          </div>
+          <div id="team-filters" class="team-filters-grid"></div>
+        </div>
+      </section>
+
       <div class="activity-toggle-row">
         <div class="activity-toggle-control">
           <span id="activity-toggle-label" class="activity-toggle-label">Show activity</span>
@@ -97,8 +139,48 @@
     </section>
 
 
+    </div><!-- /#panel-duel -->
+
+    <div id="panel-daily" class="hidden" role="tabpanel" aria-labelledby="tab-btn-daily">
+      <section class="panel daily-section">
+        <div class="daily-header">
+          <h2 id="daily-title">Joueur du Jour</h2>
+          <p id="daily-subtitle" class="daily-subtitle">Devine le joueur du jour !</p>
+        </div>
+
+        <div class="daily-search-area">
+          <div class="daily-search-wrapper">
+            <input type="text"
+                   id="daily-search-input"
+                   class="daily-search-input"
+                   autocomplete="off"
+                   spellcheck="false"
+                   placeholder="Recherche un joueur..."
+                   aria-label="Recherche un joueur"
+                   aria-autocomplete="list"
+                   aria-controls="daily-suggestions"
+                   aria-haspopup="listbox" />
+            <ul id="daily-suggestions" class="daily-suggestions" role="listbox" hidden></ul>
+          </div>
+          <button id="daily-give-up" type="button" class="btn secondary">Abandonner</button>
+        </div>
+
+        <p id="daily-attempts-label" class="daily-attempts-label"></p>
+        <div id="daily-hint-offer" class="daily-hint-offer hidden"></div>
+        <div id="daily-revealed-hints" class="daily-revealed-hints hidden"></div>
+
+        <div id="daily-guesses-grid" class="daily-guesses-grid" aria-live="polite"></div>
+
+        <div id="daily-result" class="daily-result hidden">
+          <p id="daily-result-message"></p>
+          <button id="daily-details-btn" type="button" class="btn secondary">Details</button>
+          <button id="daily-share-btn" type="button" class="btn primary">Partager</button>
+        </div>
+      </section>
+    </div><!-- /#panel-daily -->
+
   </main>
 
-  <script src="script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

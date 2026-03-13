@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "scripts": {
+    "test:unit": "node js/tests/game-engine.test.js && node js/tests/game-utils.test.js && node js/tests/daily-hints.test.js && node js/tests/daily-hints-flow.test.js && node js/tests/daily-game.test.js",
+    "test:e2e": "playwright test tests/e2e/daily-hints-flow.spec.js",
+    "test": "npm run test:unit"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  }
+}

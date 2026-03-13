@@ -1,0 +1,24 @@
+# Node dependencies
+node_modules/
+web-app/node_modules/
+
+# Test artifacts
+web-app/test-results/
+web-app/playwright-report/
+
+# Logs and local env
+*.log
+.env
+.env.*
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Python cache (if local scripts are run)
+__pycache__/
+*.pyc
+
+# Scraper local checkpoint backups
+six-nations-scraper-checkpoint.json.old
