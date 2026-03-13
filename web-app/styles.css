@@ -186,6 +186,19 @@ h1 {
   box-shadow: 0 8px 24px rgba(9, 17, 31, 0.06);
 }
 
+#game-play {
+  display: flex;
+  flex-direction: column;
+}
+
+#game-play #result-section {
+  order: 1;
+}
+
+#game-play .duel-grid {
+  order: 2;
+}
+
 h2 {
   margin: 0 0 12px;
   font-size: 1.2rem;

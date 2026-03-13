@@ -306,6 +306,12 @@ function prepareRound() {
   updateDuelCards();
 }
 
+function revealDuelResult() {
+  ui.resultSection.classList.remove('hidden');
+  // Bring feedback and next action into view to avoid manual scrolling on mobile.
+  ui.resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 function evaluateChoice(choice) {
   if (!state.currentPlayer || !state.opponentPlayer) {
     return;
@@ -335,7 +341,7 @@ function evaluateChoice(choice) {
     team: getLocalizedTeamName(winner.team, t),
     total: winner.total
   });
-  ui.resultSection.classList.remove('hidden');
+  revealDuelResult();
   updateScoreboard();
 
   lockChoices(true);
