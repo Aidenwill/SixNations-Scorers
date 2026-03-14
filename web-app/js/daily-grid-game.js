@@ -2,6 +2,7 @@ import { getCanonicalTeamName } from './teams.js';
 
 const GRID_SIZE = 3;
 const MIN_CANDIDATES_PER_CELL = 2;
+const DAILY_GRID_HASH_SALT = 'sixnations-daily-grid-showcase-v1';
 const DAILY_GRID_DATE_KEY = 'sixnations_daily_grid_date';
 const DAILY_GRID_PLACEMENTS_KEY = 'sixnations_daily_grid_placements';
 const DAILY_GRID_ABANDONED_KEY = 'sixnations_daily_grid_abandoned';
@@ -283,7 +284,7 @@ export function generateDailyGridDefinition(players, dateStr) {
   const rules = buildRuleCandidates(players);
   if (rules.length < 8) return null;
 
-  const rng = createSeededRng(hashString(dateStr));
+  const rng = createSeededRng(hashString(`${DAILY_GRID_HASH_SALT}:${dateStr}`));
 
   for (let attempt = 0; attempt < 700; attempt++) {
     const rows = pickDistinct(rules, GRID_SIZE, rng);

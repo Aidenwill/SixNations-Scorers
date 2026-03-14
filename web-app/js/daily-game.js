@@ -27,6 +27,7 @@ const DAILY_STATE_KEYS = Object.freeze([
 ]);
 const MAX_SUGGESTIONS   = 8;
 const MAX_DAILY_ATTEMPTS = 12;
+const DAILY_PLAYER_HASH_SALT = 'sixnations-daily-showcase-v1';
 const FIELD_LABEL_KEY_BY_FIELD = Object.freeze({
   team: 'dailyHintTeamLabel',
   points: 'dailyHintPointsLabel',
@@ -64,9 +65,10 @@ export function getTodayDateString() {
 /** Deterministic daily player — same result for all users on the same date. */
 export function getDailyPlayer(players, dateStr) {
   if (!players || players.length === 0) return null;
+  const seededInput = `${DAILY_PLAYER_HASH_SALT}:${dateStr}`;
   let hash = 5381;
-  for (let i = 0; i < dateStr.length; i++) {
-    hash = (((hash << 5) + hash) ^ dateStr.charCodeAt(i)) | 0;
+  for (let i = 0; i < seededInput.length; i++) {
+    hash = (((hash << 5) + hash) ^ seededInput.charCodeAt(i)) | 0;
   }
   return players[Math.abs(hash) % players.length];
 }
