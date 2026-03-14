@@ -2,48 +2,23 @@
 # Outputs player scoring data to a JSON file
 
 param(
-    [switch]$OnlyAlreadyRecordedMatches
+    [switch]$FullScrape,
+    [string[]]$MatchIds = @()
 )
 
 # Output file path
 $outputFile = "six-nations-scoring-data.json"
-# Checkpoint file to track progress
-$checkpointFile = "six-nations-scraper-checkpoint.json"
 # Array to hold all match results
 $results = @()
 # Minimum date to start scraping from (1971 when try value changed from 3 to 4 points)
 $minDate = [datetime]::Parse("1971-01-01")
 
-# Load existing data if output file exists to avoid re-processing
+# Load existing data so new runs can aggregate into the same JSON file
 if (Test-Path $outputFile) {
     $existingData = Get-Content $outputFile | ConvertFrom-Json
     if ($existingData) {
-        $results = $existingData
+        $results = @($existingData)
     }
-}
-
-# Load checkpoint data to resume from where we left off
-$checkpoint = @{
-    processedSequential = 249  # Start before 250
-    processedUuids = @()
-    recordedMatchIds = @()
-}
-if (Test-Path $checkpointFile) {
-    $checkpointData = Get-Content $checkpointFile | ConvertFrom-Json
-    if ($checkpointData) {
-        $checkpoint = $checkpointData
-    }
-}
-
-# Backward compatibility for older checkpoint files
-if (-not ($checkpoint.PSObject.Properties.Name -contains "processedSequential")) {
-    $checkpoint | Add-Member -MemberType NoteProperty -Name processedSequential -Value 249
-}
-if (-not ($checkpoint.PSObject.Properties.Name -contains "processedUuids")) {
-    $checkpoint | Add-Member -MemberType NoteProperty -Name processedUuids -Value @()
-}
-if (-not ($checkpoint.PSObject.Properties.Name -contains "recordedMatchIds")) {
-    $checkpoint | Add-Member -MemberType NoteProperty -Name recordedMatchIds -Value @()
 }
 
 # Progress tracking
@@ -51,7 +26,7 @@ $matchesProcessed = 0
 $totalSequentialMatches = 32000 - 250 + 1  # 31751 matches
 
 # Specific match IDs for Six Nations 2025-2026 (World Rugby uses UUIDs for recent matches)
-$matchIds = @(
+$defaultMatchIds = @(
     "a8eecba9-e813-4e8a-ae2a-a207d74b8608",
     "08bd5f43-cbde-48d9-b7b0-ab076c1bc391",
     "b15fe628-35cb-4afd-b191-7d7f657d6a69",
@@ -81,15 +56,8 @@ $matchIds = @(
     "2a29de97-b006-4987-9cbb-4cb88dcc453d"
 )
 
-$totalUuidMatches = $matchIds.Count  # 24 matches
-
 # Counter for periodic saves
 $saveCounter = 0
-
-# Function to save checkpoint
-function SaveCheckpoint {
-    $checkpoint | ConvertTo-Json | Out-File $checkpointFile
-}
 
 # Function to save results periodically
 function SaveResults {
@@ -99,17 +67,9 @@ function SaveResults {
 
 # Function to display progress
 function ShowProgress {
-    param($currentId, $total, $type)
+    param($currentId, $total)
     $percentage = [math]::Round(($currentId / $total) * 100, 1)
-    Write-Host "Progress: $currentId / $total ($percentage%) - $type matches processed"
-}
-
-# Function to add a match ID once to checkpoint
-function AddRecordedMatchId {
-    param($matchId)
-    if ($matchId -and ($matchId -notin $script:checkpoint.recordedMatchIds)) {
-        $script:checkpoint.recordedMatchIds += [string]$matchId
-    }
+    Write-Host "Progress: $currentId / $total ($percentage%) match IDs processed"
 }
 
 # Function to process scoring data for a team
@@ -126,6 +86,21 @@ function ProcessTeamScoring {
         $output[$type] = $playerIds
     }
     return $output
+}
+
+# Function to insert or update a match entry by matchId
+function UpsertMatchResult {
+    param($matchData)
+
+    for ($i = 0; $i -lt $script:results.Count; $i++) {
+        if ([string]$script:results[$i].matchId -eq [string]$matchData.matchId) {
+            $script:results[$i] = $matchData
+            return $false
+        }
+    }
+
+    $script:results += $matchData
+    return $true
 }
 
 # Function to process a single match by ID
@@ -162,18 +137,16 @@ function ProcessMatch {
                     )
                 }
 
-                # Add to results array
-                $script:results += $filteredData
-                AddRecordedMatchId $matchId
-                Write-Host "Match $matchId added: $competition"
+                # Add or update in results array
+                $isNew = UpsertMatchResult $filteredData
+                if ($isNew) {
+                    Write-Host "Match $matchId added: $competition"
+                } else {
+                    Write-Host "Match $matchId updated: $competition"
+                }
 
                 # Update progress counter
                 $script:matchesProcessed++
-
-                # Show progress every 100 matches
-                if ($script:matchesProcessed % 100 -eq 0) {
-                    Write-Host "Total matches processed so far: $script:matchesProcessed"
-                }
 
                 # Update save counter and save periodically
                 $script:saveCounter++
@@ -189,66 +162,59 @@ function ProcessMatch {
     }
 }
 
-if ($OnlyAlreadyRecordedMatches) {
-    # Rebuild results only from already recorded IDs in checkpoint
-    $results = @()
-    $recordedMatchIds = @($checkpoint.recordedMatchIds | Select-Object -Unique)
-    $totalRecordedMatches = $recordedMatchIds.Count
+# Build list of match IDs to process for this run (2 explicit modes)
+$hasAdHocIds = ($MatchIds | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }).Count -gt 0
 
-    Write-Host "OnlyAlreadyRecordedMatches enabled. Processing $totalRecordedMatches recorded matches from checkpoint..."
-
-    if ($totalRecordedMatches -eq 0) {
-        Write-Host "No recorded match IDs found in checkpoint."
-    } else {
-        $recordedProcessed = 0
-        foreach ($matchId in $recordedMatchIds) {
-            ProcessMatch $matchId
-            SaveCheckpoint
-            $recordedProcessed++
-
-            if ($recordedProcessed % 50 -eq 0) {
-                ShowProgress $recordedProcessed $totalRecordedMatches "Recorded"
-            }
-        }
-        Write-Host "Recorded matches processing completed. Processed $recordedProcessed matches."
-    }
-}
-else {
-    # Process sequential match IDs (historical matches), resuming from checkpoint
-    Write-Host "Starting sequential matches processing from $($checkpoint.processedSequential + 1) to 32000..."
-    for ($matchId = $checkpoint.processedSequential + 1; $matchId -le 32000; $matchId++) {
-        ProcessMatch $matchId
-        # Update checkpoint for sequential matches
-        $checkpoint.processedSequential = $matchId
-        SaveCheckpoint
-
-        # Show progress for sequential matches every 500 matches
-        if ($matchId % 500 -eq 0) {
-            ShowProgress ($matchId - 249) $totalSequentialMatches "Sequential"
-        }
-    }
-    Write-Host "Sequential matches processing completed."
-
-    # Process specific match IDs (recent matches with UUIDs), skipping already processed
-    Write-Host "Starting UUID matches processing ($totalUuidMatches matches)..."
-    $uuidProcessed = 0
-    foreach ($matchId in $matchIds) {
-        if ($matchId -notin $checkpoint.processedUuids) {
-            ProcessMatch $matchId
-            # Mark as processed
-            $checkpoint.processedUuids += $matchId
-            SaveCheckpoint
-            $uuidProcessed++
-        } else {
-            Write-Host "Skipping already processed match: $matchId"
-        }
-    }
-    Write-Host "UUID matches processing completed. Processed $uuidProcessed new matches."
+if (($FullScrape -and $hasAdHocIds) -or (-not $FullScrape -and -not $hasAdHocIds)) {
+    Write-Host "Choose exactly one mode:"
+    Write-Host "1) Full scrape: -FullScrape"
+    Write-Host "2) Ad-hoc IDs : -MatchIds id1,id2,id3"
+    exit 0
 }
 
-# Final save of results
-SaveResults
-Write-Host "Script execution completed!"
-Write-Host "Total matches processed in this run: $matchesProcessed"
-Write-Host "Total matches in results: $($results.Count)"
-Write-Host "Export completed to $outputFile"
+if ($FullScrape) {
+    $matchIdsToProcess = @()
+    for ($matchId = 250; $matchId -le 32000; $matchId++) {
+        $matchIdsToProcess += [string]$matchId
+    }
+    $matchIdsToProcess += $defaultMatchIds
+    $modeLabel = "full scrape"
+} else {
+    $matchIdsToProcess = @($MatchIds)
+    $modeLabel = "ad-hoc"
+}
+
+$matchIdsToProcess = @(
+    $matchIdsToProcess |
+    Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+    Select-Object -Unique
+)
+
+$totalMatchesToProcess = $matchIdsToProcess.Count
+
+Write-Host "Starting $modeLabel processing for $totalMatchesToProcess match IDs..."
+
+$processed = 0
+foreach ($matchId in $matchIdsToProcess) {
+    ProcessMatch $matchId
+    $processed++
+
+    $progressStep = if ($FullScrape) { 500 } else { 10 }
+    if ($processed % $progressStep -eq 0 -or $processed -eq $totalMatchesToProcess) {
+        ShowProgress $processed $totalMatchesToProcess
+    }
+}
+
+# Final save of results (also covers runs with less than 10 successful matches)
+if ($saveCounter -gt 0) {
+    SaveResults
+}
+
+if ($matchesProcessed -eq 0) {
+    Write-Host "No matching Six/Five Nations match was added or updated in this run."
+} else {
+    Write-Host "Script execution completed!"
+    Write-Host "Total matches processed in this run: $matchesProcessed"
+    Write-Host "Total matches in results: $($results.Count)"
+    Write-Host "Export completed to $outputFile"
+}
